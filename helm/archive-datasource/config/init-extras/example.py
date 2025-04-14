@@ -14,4 +14,4 @@ for message in range(1,4):
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         with open(filename, "a+") as fh:
-            fh.write(f"<134>1 {timestamp.isoformat('T')} {host} {tag} - - - This is an event for {host}-{tag} #{message}\n")
+            fh.write(f"<134>1 {timestamp.isoformat('T')} {host} {tag} - - - This is an event for {host}-{tag} for hour {hour} #{message}\n")
