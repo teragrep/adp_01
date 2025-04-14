@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration monitorInterval="30" status="info">
+  <Properties>
+    <Property name="LOG_NAME_DAILY">log-archiver-servlet-daily</Property>
+    <Property name="LOG_NAME_AUDIT">log-archiver-servlet-audit</Property>
+  </Properties>
+  <Appenders>
+    <Console name="STDOUT-DAILY">
+      <JSONLayout complete="true" compact="true" eventEol="true"/>
+      <Filters>
+        <MarkerFilter marker="METRIC" onMismatch="NEUTRAL" onMatch="DENY" />
+        <MarkerFilter marker="AUDIT" onMismatch="ACCEPT" onMatch="DENY" />
+      </Filters>
+    </Console>
+    <Console name="STDOUT-AUDIT">
+      <JSONLayout complete="true" compact="true" eventEol="true" />
+      <MarkerFilter marker="AUDIT" onMismatch="DENY" onMatch="ACCEPT" />
+    </Console>
+    <Console name="STDOUT-METRIC">
+      <JSONLayout complete="true" compact="true" eventEol="true" />
+      <MarkerFilter marker="METRIC" onMismatch="DENY" onMatch="ACCEPT" />
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="fi.failsafe.archive" level="INFO" />
+    <Root level="WARN">
+      <AppenderRef ref="STDOUT-DAILY" />
+      <AppenderRef ref="STDOUT-AUDIT" />
+      <AppenderRef ref="STDOUT-METRIC" />
+    </Root>
+  </Loggers>
+</Configuration>

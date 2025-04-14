@@ -1,0 +1,3 @@
+image:
+  path: ghcr.io/teragrep/teragrep-cluster/archive-datasource
+  version: 1.0.0

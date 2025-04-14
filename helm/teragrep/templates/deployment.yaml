@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teragrep
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: teragrep
+spec:
+  selector:
+    matchLabels:
+      app: teragrep
+  template:
+    metadata:
+      labels:
+        app: teragrep
+    spec:
+      volumes:
+        - name: shareable-hdp-03-configmap
+          configMap:
+            name: shareable-hdp-03-configmap
+        - name: shareable-spk-02-configmap
+          configMap:
+            name: shareable-spk-02-configmap
+        - name: teragrep-zep-01-configmap
+          configMap:
+            name: teragrep-zep-01-configmap
+        - name: teragrep-entrypoint
+          configMap:
+            name: teragrep-entrypoint
+        - name: teragrep-notebooks
+          configMap:
+            name: teragrep-notebooks
+      hostname: teragrep
+      subdomain: tg
+      containers:
+        - name: teragrep
+          image: {{.Values.image.path}}:{{.Values.image.version}}
+          volumeMounts:
+            - mountPath: /config/spk-02
+              name: shareable-spk-02-configmap
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /config/teragrep
+              name: teragrep-zep-01-configmap
+            - mountPath: /entrypoint.sh
+              name: teragrep-entrypoint
+              subPath: entrypoint.sh
+            - mountPath: /notebooks
+              name: teragrep-notebooks
+          tty: true
+          ports:
+          - containerPort: 8080
+          resources: {}
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            httpGet:
+              path: /health/liveness
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          securityContext:
+            privileged: {{.Values.security.privileged}}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/usr/bin/bash", "/scripts/shutdown.sh" ]

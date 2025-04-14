@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://hdfs-namenode01.{{.Values.ipa.domain | lower}}:8020</value>
+  </property>
+  <property>
+    <name>hadoop.security.auth_to_local</name>
+    <value>RULE:[2:$1/$2@$0](namenode/.*@{{.Values.ipa.domain | upper | replace "." "\\."}})s/.*/hdfs/
+RULE:[2:$1/$2@$0](datanode/.*@{{.Values.ipa.domain | upper | replace "." "\\."}})s/.*/hdfs/
+RULE:[2:$1/$2@$0](resourcemanager/.*@{{.Values.ipa.domain | upper | replace "." "\\."}})s/.*/yarn/
+RULE:[2:$1/$2@$0](nodemanager/.*@{{.Values.ipa.domain | upper | replace "." "\\."}})s/.*/yarn/
+RULE:[2:$1/$2@$0](jobhistoryserver/.*@{{.Values.ipa.domain | upper | replace "." "\\."}})s/.*/mapred/
+DEFAULT</value>
+  </property>
+  <property>
+    <name>hadoop.security.auth_to_local.mechanism</name>
+    <value>mit</value>
+  </property>
+  <property>
+    <name>hadoop.security.authentication</name>
+    <value>kerberos</value>
+  </property>
+  <property>
+    <name>hadoop.security.authorization</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hadoop.rpc.protection</name>
+    <value>authentication</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.yarn.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.yarn.groups</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.yarn.users</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hdfs.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hdfs.groups</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hdfs.users</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.zeppelin.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.zeppelin.groups</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.zeppelin.users</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.srv-hive.groups</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.srv-hive.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.security.group.mapping</name>
+    <value>org.apache.hadoop.security.ShellBasedUnixGroupsMapping</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.type</name>
+    <value>kerberos</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.simple.anonymous.allowed</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.kerberos.principal</name>
+    <value>HTTP/_HOST@{{.Values.ipa.domain | upper}}</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.kerberos.keytab</name>
+    <value>/opt/teragrep/hdp_03/keytabs/HTTP.service.keytab</value>
+  </property>
+  <property>
+    <name>hadoop.http.filter.initializers</name>
+    <value>org.apache.hadoop.security.AuthenticationFilterInitializer</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.cookie.domain</name>
+    <value></value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.kerberos.endpoint.whitelist</name>
+    <value>/jmx</value>
+  </property>
+</configuration>

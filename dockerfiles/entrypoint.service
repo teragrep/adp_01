@@ -1,0 +1,12 @@
+[Unit]
+Description=Entrypoint
+
+[Service]
+Type=oneshot
+ExecStart=bash /entrypoint.sh
+StandardInput=tty
+StandardOutput=tty
+PassEnvironment=IPA_DOMAIN IPA_PASSWORD IPA_SERVICE_HOST
+
+[Install]
+WantedBy=multi-user.target

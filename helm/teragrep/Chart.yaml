@@ -1,0 +1,5 @@
+apiVersion: v2
+name: teragrep
+description: Teragrep project including zep_01 and everything necessary to run it.
+version: 1.0.0
+appVersion: 1.0.0

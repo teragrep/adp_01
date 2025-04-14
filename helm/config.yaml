@@ -1,0 +1,151 @@
+# Everything needed for managing IPA
+ipa:
+  # Same password is used for both admin and manager.
+  password: "SomeSecretIPAPassword"
+  domain: "tg.dev.test"
+
+  # Any external entities will be resolved using this forwarder.
+  forwarder: 8.8.8.8
+
+  # These are mapped key->hostname, value->services registered for the host
+  hosts:
+    # Hosts zep_01, ajs_01 and all that
+    teragrep: zeppelin
+
+    # Yarn: Job History Server, Resource Manager and Node Managers
+    yarn-controlnode01: HTTP jobhistoryserver resourcemanager
+    yarn-workernode01: HTTP nodemanager
+    yarn-workernode02: HTTP nodemanager
+    yarn-workernode03: HTTP nodemanager
+
+    # HDFS: Namenode and datanodes. Namenode runs also hdp_04
+    hdfs-namenode01: HTTP namenode srv-hdp_04
+    hdfs-datanode01: HTTP datanode
+    hdfs-datanode02: HTTP datanode
+    hdfs-datanode03: HTTP datanode
+
+  # Should not be used directly but required for services.
+  serviceusers:
+    srv-hdp_04: SomeSecretPasswordForHdp04
+
+  # These are mapped key->username, value->password
+  users:
+    tg-admin: AdminPassword
+    tg-user01: FirstPassword
+    tg-user02: SecondPassword
+
+  # These are mapped key->groupname, value->users in the group
+  groups:
+    tg-users: tg-admin first-user second-user
+    tg-admins: tg-admin
+    hdfs: tg-admin srv-hdp_04
+
+# Global security related configurations
+security:
+  # Whether privileged mode should be used for containers. This can be potentially huge vulnerability but systemd based containers might not run without it.
+  privileged: "true"
+
+# Global resource limits
+resources:
+  # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
+  # 1000m = 1 CPU
+  yarn:
+    controlnode:
+      cpu: 250m
+    workernode:
+      cpu: 1000m
+  hdfs:
+    namenode:
+      cpu: 1000m
+    datanode:
+      cpu: 1000m
+  archive:
+    journal:
+      cpu: 1000m
+    journaldatabase:
+      cpu: 1000m
+    catalog:
+      cpu: 1000m
+    catalogdatabase:
+      cpu: 1000m
+    s3:
+      cpu: 1000m
+
+# Global yarn related configurations
+yarn:
+  # These resources are *per node*
+  resources:
+    # Memory in megabytes.
+    memory: 4096
+    # vCPUs
+    cores: 8
+  # How much memory can be allocated per task in megabytes.
+  allocation:
+    minimum: 128
+    maximum: 3072
+
+# Global hdfs related configurations
+hdfs:
+  superusergroup: hdfs
+  administrators: hdfs
+  jkspassword: jksp4ssw0rd
+
+# Archive related configurations
+archive:
+  secrets:
+    restorer: 7VHMxvTvey3z7vRevgTM
+    agent: 3t3qiWVfpsTnrvNtgTp4
+    catalog: ikRoY7dwLFHugrkPFNCR
+    catalog_ui: cxrsph3hxdqyMggFvVvj
+    catalog_batch: RFL4TNxNfR7hEpPgRqxg
+  datasource:
+    # There is only one lookup group.
+    lookups:
+      # All hosts have ipa.domain suffix
+      hosts:
+        example: ignored-value-for-now
+      # key:value gets mapped as tag -> index lookup json.
+      indexes:
+        example: example
+  # rest-01-database
+  journal:
+    database:
+      name: journaldb
+      username: journaldb
+      password: 77cTAdhXNzAohEaXvd4K
+  # rest-01-database as well
+  streamdb:
+    database:
+      name: streamdb
+      username: streamdb
+      password: gCxTPHpU4sbhbAMwhgoH
+  # rest-02-backend-database
+  catalog:
+    database:
+      name: catalogdb
+      username: catalogdb
+      password: RhFRxUaiwepJtNdj4wEU
+  s3:
+    # Well known example key and secret: https://docs.aws.amazon.com/STS/latest/APIReference/API_GetAccessKeyInfo.html
+    accesskey: AKIAIOSFODNN7EXAMPLE
+    secret: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+# Development related extras
+development:
+  # Install certain tools automatically on startup
+  tools:
+    ipa:
+      enabled: false
+      items: "jq emacs-nox"
+    teragrep:
+      enabled: false
+      items: "jq emacs-nox"
+    yarn:
+      enabled: false
+      items: "jq emacs-nox"
+    hdfs:
+      enabled: false
+      items: "jq emacs-nox"
+    archive:
+      enabled: false
+      items: "emacs-nox"

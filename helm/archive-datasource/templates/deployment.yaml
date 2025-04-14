@@ -1,0 +1,75 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archive-datasource
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: archive-datasource
+spec:
+  selector:
+    matchLabels:
+      app: archive-datasource
+  template:
+    metadata:
+      labels:
+        app: archive-datasource
+    spec:
+      volumes:
+        - name: archive-datasource-obj-01-configmap
+          configMap:
+            name: archive-datasource-obj-01-configmap
+        - name: archive-datasource-rest-02-data-tool-configmap
+          configMap:
+            name: archive-datasource-rest-02-data-tool-configmap
+        - name: archive-datasource-init-configmap
+          configMap:
+            name: archive-datasource-init-configmap
+        - name: archive-datasource-init-extras-configmap
+          configMap:
+            name: archive-datasource-init-extras-configmap
+        - name: archive-datasource-entrypoint
+          configMap:
+            name: archive-datasource-entrypoint
+      hostname: archive-datasource
+      subdomain: tg
+      containers:
+        - name: archive-datasource
+          image: {{.Values.image.path}}:{{.Values.image.version}}
+          volumeMounts:
+            - mountPath: /config/obj-01
+              name: archive-datasource-obj-01-configmap
+            - mountPath: /config/rest-02-data-tool
+              name: archive-datasource-rest-02-data-tool-configmap
+            - mountPath: /config/init
+              name: archive-datasource-init-configmap
+            - mountPath: /init-extras
+              name: archive-datasource-init-extras-configmap
+            - mountPath: /entrypoint.sh
+              name: archive-datasource-entrypoint
+              subPath: entrypoint.sh
+          tty: true
+          resources:
+            requests:
+              cpu: "0.001m"
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "[ -f /datasource.ready ]"
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 60
+          securityContext:
+            privileged: {{.Values.security.privileged}}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/usr/bin/bash", "/scripts/shutdown.sh" ]

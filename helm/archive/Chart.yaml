@@ -1,0 +1,5 @@
+apiVersion: v2
+name: archive
+description: Archive containing Journal (rest-01), Catalog (rest-02) and S3 with S3Proxy (bos_01 and pth_05 respectively)
+version: 1.0.0
+appVersion: 1.0.0

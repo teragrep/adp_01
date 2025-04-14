@@ -1,0 +1,137 @@
+{{- range tuple "workernode01" "workernode02" "workernode03" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yarn-{{.}}
+  namespace: {{$.Release.Namespace}}
+  labels:
+    app: yarn-{{.}}
+spec:
+  selector:
+    matchLabels:
+      app: yarn-{{.}}
+  template:
+    metadata:
+      labels:
+        app: yarn-{{.}}
+    spec:
+      volumes:
+        - name: shareable-hdp-03-configmap
+          configMap:
+            name: shareable-hdp-03-configmap
+        - name: shareable-spk-02-configmap
+          configMap:
+            name: shareable-spk-02-configmap
+        - name: yarn-entrypoint
+          configMap:
+            name: yarn-entrypoint
+      hostname: yarn-{{.}}
+      subdomain: tg
+      containers:
+        - name: yarn-{{.}}
+          image: {{$.Values.image.path}}:{{$.Values.image.version}}
+          volumeMounts:
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /config/spk-02
+              name: shareable-spk-02-configmap
+            - mountPath: /entrypoint.sh
+              name: yarn-entrypoint
+              subPath: entrypoint.sh
+          tty: true
+          resources:
+            requests:
+              cpu: "0.001m"
+            limits:
+              cpu: "{{$.Values.resources.yarn.workernode.cpu}}"
+          env:
+          - name: IPA_DOMAIN
+            value: {{$.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{$.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status nodemanager"
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 60
+          securityContext:
+            privileged: {{$.Values.security.privileged}}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/usr/bin/bash", "/scripts/shutdown.sh" ]
+{{- end}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yarn-controlnode01
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: yarn-controlnode01
+spec:
+  selector:
+    matchLabels:
+      app: yarn-controlnode01
+  template:
+    metadata:
+      labels:
+        app: yarn-controlnode01
+    spec:
+      volumes:
+        - name: shareable-hdp-03-configmap
+          configMap:
+            name: shareable-hdp-03-configmap
+        - name: shareable-spk-02-configmap
+          configMap:
+            name: shareable-spk-02-configmap
+        - name: yarn-entrypoint
+          configMap:
+            name: yarn-entrypoint
+      hostname: yarn-controlnode01
+      subdomain: tg
+      containers:
+        - name: yarn-controlnode01
+          image: {{.Values.image.path}}:{{.Values.image.version}}
+          volumeMounts:
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /config/spk-02
+              name: shareable-spk-02-configmap
+            - mountPath: /entrypoint.sh
+              name: yarn-entrypoint
+              subPath: entrypoint.sh
+          tty: true
+          resources:
+            requests:
+              cpu: "0.001m"
+            limits:
+              cpu: "{{$.Values.resources.yarn.controlnode.cpu}}"
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status jobhistoryserver && systemctl status resourcemanager"
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 60
+          securityContext:
+            privileged: {{.Values.security.privileged}}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/usr/bin/bash", "/scripts/shutdown.sh" ]

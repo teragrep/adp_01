@@ -1,0 +1,17 @@
+# Info
+
+## General
+
+Any `*.zpln` files placed here will be automatically processed and will be available on the next deployment.
+
+The combined size of *ALL* `*.zpln` files link:https://kubernetes.io/docs/concepts/configuration/configmap/#motivation[must be less than 1 MiB]
+
+Any changes on runtime ***won't*** survive a container restart and must be manually exported and updated if necessary.
+
+## Updating
+
+The `*.zpln` files are `.gitignored` to prevent any accidental updates.
+
+You can optimize size for *all* notebooks by using `optimize_notebooks.sh` script. Note that this is relatively destructive operation, doesn't make any backups and it requires `jq` to be available.
+
+You can force add and update notebooks in the repository by using `-f` switch when using `git add`.
