@@ -75,7 +75,7 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
         jq --arg host "${1}" '.table|=.+[{"index": $host, "value": true}]' /opt/teragrep/pth_05/etc/lookup/teragrep_hosts.json > /opt/teragrep/pth_05/etc/lookup/teragrep_hosts.json.tmp;
         mv -f /opt/teragrep/pth_05/etc/lookup/teragrep_hosts.json.tmp /opt/teragrep/pth_05/etc/lookup/teragrep_hosts.json;
     }
-    {{- range $host, $ignored := .Values.archive.datasource.lookups.hosts }}
+    {{- range $host, $ignored := .Values.archive.datagenerator.static.lookups.hosts }}
     create_lookup_hosts "{{$host}}.{{$.Values.ipa.domain}}";
     {{- end }}
 
@@ -85,7 +85,7 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
         jq --arg index "${1}" --arg value "${2}" '.table|=.+[{"index": $index, "value": $value}]' /opt/teragrep/pth_05/etc/lookup/teragrep_indexes.json > /opt/teragrep/pth_05/etc/lookup/teragrep_indexes.json.tmp;
         mv -f /opt/teragrep/pth_05/etc/lookup/teragrep_indexes.json.tmp /opt/teragrep/pth_05/etc/lookup/teragrep_indexes.json;
     }
-    {{- range $index, $value := .Values.archive.datasource.lookups.indexes }}
+    {{- range $index, $value := .Values.archive.datagenerator.static.lookups.indexes }}
     create_lookup_indexes "{{$index}}" "{{$value}}";
     {{- end }}
 
@@ -97,7 +97,7 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
         jq --arg tag "${1}" '.table|=.+[{"index": $tag, "value": ("log:"+$tag+":0")}]' /tmp/streamdb/lookup/teragrep_sourcetypes.json > /tmp/streamdb/lookup/teragrep_sourcetypes.json.tmp;
         mv -f /tmp/streamdb/lookup/teragrep_sourcetypes.json.tmp /tmp/streamdb/lookup/teragrep_sourcetypes.json;
     }
-    {{- range $tag, $ignored := .Values.archive.datasource.lookups.indexes }}
+    {{- range $tag, $ignored := .Values.archive.datagenerator.static.lookups.indexes }}
     create_lookup_sourcetypes "{{$tag}}";
     {{- end }}
     cp /opt/teragrep/pth_05/etc/lookup/teragrep_indexes.json /opt/teragrep/pth_05/etc/lookup/teragrep_hosts.json /tmp/streamdb/lookup/;

@@ -98,15 +98,16 @@ archive:
     catalog: ikRoY7dwLFHugrkPFNCR
     catalog_ui: cxrsph3hxdqyMggFvVvj
     catalog_batch: RFL4TNxNfR7hEpPgRqxg
-  datasource:
-    # There is only one lookup group.
-    lookups:
-      # All hosts have ipa.domain suffix
-      hosts:
-        example: ignored-value-for-now
-      # key:value gets mapped as tag -> index lookup json.
-      indexes:
-        example: example
+  datagenerator:
+    static:
+      # There is only one lookup group.
+      lookups:
+        # All hosts have ipa.domain suffix
+        hosts:
+          example: ignored-value-for-now
+        # key:value gets mapped as tag -> index lookup json.
+        indexes:
+          example: example
   # rest-01-database
   journal:
     database:

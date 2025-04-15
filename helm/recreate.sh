@@ -2,7 +2,7 @@
 set -e;
 echo "Stopping all existing modules";
 ./stop.sh;
-for module in shareable ipa hdfs yarn archive archive-datasource teragrep; do
+for module in shareable ipa hdfs yarn archive archive-datagenerator-static teragrep; do
     if ! ./install.sh "${module}" "$@"; then
         echo "Failure detected, stopping everything.";
         ./stop.sh;

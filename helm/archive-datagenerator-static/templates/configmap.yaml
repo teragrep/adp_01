@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: archive-datasource-{{.}}-configmap
+  name: archive-datagenerator-static-{{.}}-configmap
   namespace: {{$.Release.Namespace}}
 data:
 {{- $path := printf "config/%s/*" . }}
@@ -13,7 +13,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: archive-datasource-entrypoint
+  name: archive-datagenerator-static-entrypoint
   namespace: {{.Release.Namespace}}
 data:
 {{ (tpl (.Files.Glob "entrypoint/entrypoint.sh").AsConfig .) | indent 2 }}

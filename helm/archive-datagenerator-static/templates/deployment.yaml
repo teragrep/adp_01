@@ -2,51 +2,51 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: archive-datasource
+  name: archive-datagenerator-static
   namespace: {{.Release.Namespace}}
   labels:
-    app: archive-datasource
+    app: archive-datagenerator-static
 spec:
   selector:
     matchLabels:
-      app: archive-datasource
+      app: archive-datagenerator-static
   template:
     metadata:
       labels:
-        app: archive-datasource
+        app: archive-datagenerator-static
     spec:
       volumes:
-        - name: archive-datasource-obj-01-configmap
+        - name: archive-datagenerator-static-obj-01-configmap
           configMap:
-            name: archive-datasource-obj-01-configmap
-        - name: archive-datasource-rest-02-data-tool-configmap
+            name: archive-datagenerator-static-obj-01-configmap
+        - name: archive-datagenerator-static-rest-02-data-tool-configmap
           configMap:
-            name: archive-datasource-rest-02-data-tool-configmap
-        - name: archive-datasource-init-configmap
+            name: archive-datagenerator-static-rest-02-data-tool-configmap
+        - name: archive-datagenerator-static-init-configmap
           configMap:
-            name: archive-datasource-init-configmap
-        - name: archive-datasource-init-extras-configmap
+            name: archive-datagenerator-static-init-configmap
+        - name: archive-datagenerator-static-init-extras-configmap
           configMap:
-            name: archive-datasource-init-extras-configmap
-        - name: archive-datasource-entrypoint
+            name: archive-datagenerator-static-init-extras-configmap
+        - name: archive-datagenerator-static-entrypoint
           configMap:
-            name: archive-datasource-entrypoint
-      hostname: archive-datasource
+            name: archive-datagenerator-static-entrypoint
+      hostname: archive-datagenerator-static
       subdomain: tg
       containers:
-        - name: archive-datasource
+        - name: archive-datagenerator-static
           image: {{.Values.image.path}}:{{.Values.image.version}}
           volumeMounts:
             - mountPath: /config/obj-01
-              name: archive-datasource-obj-01-configmap
+              name: archive-datagenerator-static-obj-01-configmap
             - mountPath: /config/rest-02-data-tool
-              name: archive-datasource-rest-02-data-tool-configmap
+              name: archive-datagenerator-static-rest-02-data-tool-configmap
             - mountPath: /config/init
-              name: archive-datasource-init-configmap
+              name: archive-datagenerator-static-init-configmap
             - mountPath: /init-extras
-              name: archive-datasource-init-extras-configmap
+              name: archive-datagenerator-static-init-extras-configmap
             - mountPath: /entrypoint.sh
-              name: archive-datasource-entrypoint
+              name: archive-datagenerator-static-entrypoint
               subPath: entrypoint.sh
           tty: true
           resources:
@@ -62,7 +62,7 @@ spec:
               command:
               - "/usr/bin/bash"
               - "-c"
-              - "[ -f /datasource.ready ]"
+              - "[ -f /datagenerator-static.ready ]"
             timeoutSeconds: 10
             periodSeconds: 10
             successThreshold: 1

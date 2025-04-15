@@ -37,7 +37,7 @@ create_host() {
 }
 echo "Creating data-tool hosts";
 mkdir -p /opt/Fail-Safe/rest-02-data-tool/var/hosts;
-{{- range $host, $ignored := .Values.archive.datasource.lookups.hosts }}
+{{- range $host, $ignored := .Values.archive.datagenerator.static.lookups.hosts }}
 create_host "{{$host}}.{{$.Values.ipa.domain}}";
 {{- end }}
 
@@ -50,7 +50,7 @@ update_cfe_01() {
 echo "Creating data-tool cfe-01 configuration";
 mkdir -p /opt/Fail-Safe/rest-02-data-tool/var/cfe-01;
 echo '{"files": []}' > /opt/Fail-Safe/rest-02-data-tool/var/cfe-01/generate_rsyslog_files.json;
-{{- range $tag, $index := .Values.archive.datasource.lookups.indexes }}
+{{- range $tag, $index := .Values.archive.datagenerator.static.lookups.indexes }}
 update_cfe_01 "{{$tag}}" "{{$index}}";
 {{- end }}
 
@@ -73,4 +73,4 @@ echo "============";
 
 # Signal that we are ready to go
 echo "We are ready here";
-touch /datasource.ready;
+touch /datagenerator-static.ready;
