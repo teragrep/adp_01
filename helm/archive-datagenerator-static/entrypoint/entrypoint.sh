@@ -62,15 +62,6 @@ echo "Running data-tool";
 echo "Running archive";
 sudo su - srv-arcv -s /usr/bin/bash -c "/usr/lib/jvm/jre-1.8.0-openjdk/bin/java -Dlog4j.configurationFile=file:///opt/Fail-Safe/obj-01/etc/log4j2.xml -jar /opt/Fail-Safe/obj-01/share/java/logarchiver-batch.jar --once --spring.config.location=file:///opt/Fail-Safe/obj-01/etc/application.properties";
 
-# Just a note about possible exceptions
-echo "============";
-echo "Theres a chance that the following errors appear:";
-echo "[ERROR] fi.failsafe.archive.logarchiver.batch.rest.ArchiverRestClient [thread=archiving-task-5, checkMetadataExists() returned an unexcepted status code 500 INTERNAL_SERVER_ERROR]";
-echo "[ERROR] fi.failsafe.archive.logarchiver.batch.Archiver [thread=main, Archiving failed] org.springframework.web.client.HttpServerErrorException$InternalServerError: 500 : [no body]";
-echo "They SEEM to be ignorable and do not appear on re-run but documenting it here just in case.";
-echo "============";
-
-
 # Signal that we are ready to go
 echo "We are ready here";
 touch /datagenerator-static.ready;
