@@ -117,10 +117,10 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
     systemctl start pth_05;
     journalctl -fu bos_01 -fu pth_05;
 else
-    mkdir -p /run/mariadb/;
-    chown -R mysql:mysql /run/mariadb/;
-    echo "Setting up database";
-    sudo su - mysql -s /usr/bin/bash -c "mariadb-install-db";
+    # FIXME: This is a hack, make a proper configuration file or support these configurations
+    echo "Creating a disable ssl patch";
+    echo -e "[mariadb]\ndisable-ssl" > /etc/my.cnf.d/disable-ssl-server.cnf;
+    echo -e "[mariadb-client]\ndisable-ssl-verify-server-cert" > /etc/my.cnf.d/disable-ssl-client.cnf;
     echo "Starting database";
     # Database is not compatible to be started via systemctl commands.
     ( sudo su - mysql -s /usr/bin/bash -c "mariadbd"; ) &
