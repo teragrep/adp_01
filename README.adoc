@@ -7,7 +7,7 @@ The documentation and repository aims to:
 
 The user is expected to have `Helm` and supported version of `Kubernetes` cluster installed with basic know-how how to operate them.
 
-Tested on link:https://minikube.sigs.k8s.io/docs/drivers/docker/[Minikube with Docker driver.]
+Tested on link:https://minikube.sigs.k8s.io/docs/drivers/kvm2/[Minikube with KVM2 driver.]
 
 == Requirements
 
@@ -57,6 +57,6 @@ Expected files to be inside `dockerfiles/rpms/` directory:
   - `spk_03.rpm`
   - `zep_01.rpm`
 
-The scripts `build-dev.sh` and `minikube-load.sh` under `dockerfiles/` directory will build and load the wanted images to your local `Minikube` cluster. These containers can then be used by passing `dev` argument to the relevant scripts, read more under `Usage`.
+The scripts `build-dev.sh` and `minikube-load.sh` under `dockerfiles/` directory will build and load the wanted images using podman to your local `Minikube` cluster. These containers can then be used by passing `dev` argument to the relevant scripts, read more under `Usage`.
 
 Be sure to uninstall any running modules to make sure the container images are properly updated.

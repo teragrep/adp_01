@@ -1,10 +1,16 @@
 #!/bin/bash
 echo "Make sure no pods are running while syncing images";
-( minikube image load teragrep/teragrep-cluster/teragrep:dev --overwrite=true --daemon=true; ) &
-( minikube image load teragrep/teragrep-cluster/ipa:dev --overwrite=true --daemon=true; ) &
-( minikube image load teragrep/teragrep-cluster/hdfs:dev --overwrite=true --daemon=true; ) &
-( minikube image load teragrep/teragrep-cluster/yarn:dev --overwrite=true --daemon=true; ) &
-( minikube image load teragrep/teragrep-cluster/archive:dev --overwrite=true --daemon=true; ) &
-( minikube image load teragrep/teragrep-cluster/archive-datagenerator-static:dev --overwrite=true --daemon=true; ) &
-( minikube image load teragrep/teragrep-cluster/mariadb:dev --overwrite=true --daemon=true; ) &
-wait;
+if [ ! -d images ]; then
+    mkdir images;
+fi;
+
+sync() {
+    echo "Syncing image ${1}";
+    podman save -o "images/${1}.tar" "localhost/teragrep/teragrep-cluster/${1}:dev";
+    minikube image rm "localhost/teragrep/teragrep-cluster/${1}:dev";
+    minikube image load "images/${1}.tar" --overwrite=true --daemon=false;
+    rm -fv "images/${1}.tar";
+}
+for image in teragrep ipa hdfs yarn archive archive-datagenerator-static mariadb; do
+    sync "${image}";
+done;
