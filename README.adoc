@@ -50,9 +50,17 @@ The rpm files have to be provided by the user as this repository do not contain 
 Expected files to be inside `dockerfiles/rpms/` directory:
 
   - `ajs_01.rpm`
+  - `bos_01.rpm`
   - `hdp_03.rpm`
+  - `hdp_04.rpm`
+  - `obj-01.rpm`
+  - `pth_05.rpm`
   - `pth_10.rpm`
   - `pyz_01.rpm`
+  - `rest-01.rpm`
+  - `rest-02-backend.rpm`
+  - `rest-02-data-tool.rpm`
+  - `rest-03-extras.rpm`
   - `spk_02.rpm`
   - `spk_03.rpm`
   - `zep_01.rpm`
