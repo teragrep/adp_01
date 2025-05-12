@@ -1,5 +1,4 @@
 FROM rockylinux:9
-RUN echo -e "[mariadb]\nname = MariaDB\nbaseurl = https://mirror.mariadb.org/yum/11.4/rocky9-amd64/\ngpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB\ngpgcheck=1" > /etc/yum.repos.d/mariadb.repo
 RUN dnf install -y freeipa-client mariadb-server && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
