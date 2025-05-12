@@ -7,7 +7,6 @@ fi;
 sync() {
     echo "Syncing image ${1}";
     podman save -o "images/${1}.tar" "localhost/teragrep/teragrep-cluster/${1}:dev";
-    minikube image rm "localhost/teragrep/teragrep-cluster/${1}:dev";
     minikube image load "images/${1}.tar" --overwrite=true --daemon=false;
     rm -fv "images/${1}.tar";
 }
