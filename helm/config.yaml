@@ -76,13 +76,13 @@ yarn:
   # These resources are *per node*
   resources:
     # Memory in megabytes.
-    memory: 4096
+    memory: 2048
     # vCPUs
     cores: 8
   # How much memory can be allocated per task in megabytes.
   allocation:
     minimum: 128
-    maximum: 3072
+    maximum: 1536
 
 # Global hdfs related configurations
 hdfs:
