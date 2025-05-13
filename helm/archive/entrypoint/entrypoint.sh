@@ -34,8 +34,6 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
     wait_for_database "archive-journal-database.{{.Values.ipa.domain}}" "{{.Values.archive.journal.database.username}}" "{{.Values.archive.journal.database.password}}";
     bash /scripts/copy_config.sh /config/bos-01/ /opt/teragrep/bos_01/etc/ srv-s3px:srv-s3px;
     bash /scripts/copy_config.sh /config/pth-05/ /opt/teragrep/pth_05/etc/ srv-s3gw:srv-s3gw;
-    # FIXME: This is a hack, https://github.com/teragrep/bos_01/issues/10 & https://github.com/teragrep/bos_01/issues/11 - bos_01 actually requires java 11
-    update-alternatives --set java java-11-openjdk.x86_64;
 
     # Create storage directory and default bucket
     mkdir -p /srv/teragrep/bos_01/hundred-year;
@@ -113,6 +111,10 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
     # HACK: Adding logback configuration directly to the servicefile: https://github.com/teragrep/bos_01/issues/9
     echo "Patching bos_01 service for logback configuration";
     sed -i 's,-cp,-Dlogback.configurationFile=/opt/teragrep/bos_01/etc/logback.xml -cp,g' /usr/lib/systemd/system/bos_01.service;
+    # FIXME: This is a hack, https://github.com/teragrep/bos_01/issues/10 & https://github.com/teragrep/bos_01/issues/11 - bos_01 actually requires java 11
+    echo "Patching bos_01 service for direct java path";
+    update-alternatives --set java java-11-openjdk.x86_64;
+    sed -i 's,/usr/bin/java,/usr/lib/jvm/jre-11-openjdk/bin/java,g' /usr/lib/systemd/system/bos_01.service
     # Start processes
     echo "Starting processes";
     systemctl start bos_01;
