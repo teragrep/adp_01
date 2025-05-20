@@ -36,7 +36,7 @@ ipa:
 
   # These are mapped key->groupname, value->users in the group
   groups:
-    tg-users: tg-admin first-user second-user
+    tg-users: tg-admin tg-user01 tg-user02
     tg-admins: tg-admin
     hdfs: tg-admin srv-hdp_04
 
