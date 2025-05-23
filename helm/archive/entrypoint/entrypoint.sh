@@ -121,13 +121,13 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
     systemctl start pth_05;
     journalctl -fu bos_01 -fu pth_05;
 else
-    mkdir -p /run/mariadb/;
-    chown -R mysql:mysql /run/mariadb/;
-    echo "Setting up database";
-    sudo su - mysql -s /usr/bin/bash -c "mariadb-install-db";
-    echo "Starting database";
+    # FIXME: This is a hack, make a proper configuration file or support these configurations
+    echo "Creating a disable ssl patch";
+    echo -e "[mariadb]\ndisable-ssl" > /etc/my.cnf.d/disable-ssl-server.cnf;
+    echo -e "[mariadb-client]\ndisable-ssl-verify-server-cert" > /etc/my.cnf.d/disable-ssl-client.cnf;
     # Database is not compatible to be started via systemctl commands.
-    ( sudo su - mysql -s /usr/bin/bash -c "mariadbd"; ) &
+    echo "Starting database";
+    systemctl start mariadb;
     echo "Waiting for database to get up";
     while ! mariadb <<< "select 1;" > /dev/null 2>&1; do
         sleep 1;
@@ -136,6 +136,6 @@ else
     for importfile in /config/*.sql; do
         mariadb < "${importfile}";
     done;
-    # Prevents entrypoint from exiting and taking database down with it.
-    wait;
+    echo "Starting journalctl for database";
+    journalctl --boot -fu mariadb;
 fi;
