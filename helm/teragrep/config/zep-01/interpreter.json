@@ -321,7 +321,7 @@
         },
         "dpl.archive.db.url": {
           "name": "dpl.archive.db.url",
-          "value": "jdbc:mariadb://archive-journal-database.{{.Values.ipa.domain}}:3306/{{.Values.archive.streamdb.database.name}}?serverTimezone=Europe/Helsinki&useSSL=false&verifyServerCertificate=true&enabledTLSProtocols=TLSv1.3",
+          "value": "jdbc:mariadb://archive-journal-database.{{.Values.ipa.domain}}:3306/{{.Values.archive.streamdb.database.name}}?serverTimezone=Europe/Helsinki&useSSL=true&verifyServerCertificate=true&enabledTLSProtocols=TLSv1.2",
           "type": "string",
           "description": "URL to streamdb database, including the database name"
         },
@@ -405,7 +405,7 @@
         },
         "dpl.pth_06.archive.db.url": {
           "name": "dpl.pth_06.archive.db.url",
-          "value": "jdbc:mariadb://archive-journal-database.{{.Values.ipa.domain}}:3306/{{.Values.archive.streamdb.database.name}}?serverTimezone=Europe/Helsinki&useSSL=false&verifyServerCertificate=true&enabledTLSProtocols=TLSv1.3",
+          "value": "jdbc:mariadb://archive-journal-database.{{.Values.ipa.domain}}:3306/{{.Values.archive.streamdb.database.name}}?serverTimezone=Europe/Helsinki&useSSL=true&verifyServerCertificate=true&enabledTLSProtocols=TLSv1.2",
           "type": "string",
           "description": "Teragrep Datasource Archive Database URL"
         },

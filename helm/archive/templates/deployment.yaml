@@ -22,6 +22,9 @@ spec:
         - name: archive-entrypoint
           configMap:
             name: archive-entrypoint
+        - name: archive-database-shared
+          configMap:
+            name: archive-database-shared
       hostname: archive-journal
       subdomain: tg
       containers:
@@ -33,6 +36,9 @@ spec:
             - mountPath: /entrypoint.sh
               name: archive-entrypoint
               subPath: entrypoint.sh
+            - mountPath: /etc/my.cnf.d/enforce_tls.cnf
+              name: archive-database-shared
+              subPath: enforce_tls.cnf
           tty: true
           resources:
             requests:
@@ -84,6 +90,9 @@ spec:
         - name: archive-entrypoint
           configMap:
             name: archive-entrypoint
+        - name: archive-database-shared
+          configMap:
+            name: archive-database-shared
       hostname: archive-journal-database
       subdomain: tg
       containers:
@@ -95,6 +104,9 @@ spec:
             - mountPath: /entrypoint.sh
               name: archive-entrypoint
               subPath: entrypoint.sh
+            - mountPath: /etc/my.cnf.d/enforce_tls.cnf
+              name: archive-database-shared
+              subPath: enforce_tls.cnf
           tty: true
           resources:
             requests:
@@ -146,6 +158,9 @@ spec:
         - name: archive-entrypoint
           configMap:
             name: archive-entrypoint
+        - name: archive-database-shared
+          configMap:
+            name: archive-database-shared
       hostname: archive-catalog
       subdomain: tg
       containers:
@@ -157,6 +172,9 @@ spec:
             - mountPath: /entrypoint.sh
               name: archive-entrypoint
               subPath: entrypoint.sh
+            - mountPath: /etc/my.cnf.d/enforce_tls.cnf
+              name: archive-database-shared
+              subPath: enforce_tls.cnf
           tty: true
           resources:
             requests:
@@ -208,6 +226,9 @@ spec:
         - name: archive-entrypoint
           configMap:
             name: archive-entrypoint
+        - name: archive-database-shared
+          configMap:
+            name: archive-database-shared
       hostname: archive-catalog-database
       subdomain: tg
       containers:
@@ -219,6 +240,9 @@ spec:
             - mountPath: /entrypoint.sh
               name: archive-entrypoint
               subPath: entrypoint.sh
+            - mountPath: /etc/my.cnf.d/enforce_tls.cnf
+              name: archive-database-shared
+              subPath: enforce_tls.cnf
           tty: true
           resources:
             requests:
@@ -273,6 +297,9 @@ spec:
         - name: archive-entrypoint
           configMap:
             name: archive-entrypoint
+        - name: archive-database-shared
+          configMap:
+            name: archive-database-shared
       hostname: archive-s3
       subdomain: tg
       containers:
@@ -286,6 +313,9 @@ spec:
             - mountPath: /entrypoint.sh
               name: archive-entrypoint
               subPath: entrypoint.sh
+            - mountPath: /etc/my.cnf.d/enforce_tls.cnf
+              name: archive-database-shared
+              subPath: enforce_tls.cnf
           tty: true
           resources:
             requests:
