@@ -121,11 +121,10 @@ elif [[ "${HOSTNAME}" =~ ^archive-s3$ ]]; then
     systemctl start pth_05;
     journalctl -fu bos_01 -fu pth_05;
 else
-    # FIXME: This is a hack, make a proper configuration file or support these configurations
-    echo "Creating a disable ssl patch";
-    echo -e "[mariadb]\ndisable-ssl" > /etc/my.cnf.d/disable-ssl-server.cnf;
-    echo -e "[mariadb-client]\ndisable-ssl-verify-server-cert" > /etc/my.cnf.d/disable-ssl-client.cnf;
-    # Database is not compatible to be started via systemctl commands.
+    echo "Fetching server certificate";
+    ipa-getcert request --certfile /etc/pki/tls/certs/mariadb.crt --keyfile /etc/pki/tls/certs/mariadb.key --subject-name "CN=$(hostname -f)" --dns "$(hostname -f)" --principal "host/$(hostname -f)" --wait;
+    chown mysql:mysql /etc/pki/tls/certs/mariadb.key /etc/pki/tls/certs/mariadb.crt;
+
     echo "Starting database";
     systemctl start mariadb;
     echo "Waiting for database to get up";

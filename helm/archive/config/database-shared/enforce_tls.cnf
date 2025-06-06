@@ -1,0 +1,11 @@
+[mariadb]
+tls_version=TLSv1.3
+require_secure_transport=on
+ssl_cert=/etc/pki/tls/certs/mariadb.crt
+ssl_key=/etc/pki/tls/certs/mariadb.key
+ssl_ca=/etc/pki/tls/certs/ca-bundle.crt
+
+[client]
+ssl=on
+ssl_ca=/etc/pki/tls/certs/ca-bundle.crt
+ssl-verify-server-cert=on
