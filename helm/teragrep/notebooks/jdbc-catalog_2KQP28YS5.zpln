@@ -36,7 +36,7 @@
       "dateFinished": "2001-01-01 01:01:01.000"
     },
     {
-      "text": "%jdbc.conf\ndefault.url=jdbc:mariadb://archive-catalog-database.{{.Values.ipa.domain}}/{{.Values.archive.catalog.database.name}}?serverTimezone=Europe/Helsinki&useSSL=true&verifyServerCertificate=true&enabledTLSProtocols=TLSv1.2\ndefault.user={{.Values.archive.catalog.database.username}}\ndefault.password={{.Values.archive.catalog.database.password}}",
+      "text": "%jdbc.conf\ndefault.url=jdbc:mariadb://archive-catalog-database.{{.Values.ipa.domain}}/{{.Values.archive.catalog.database.name}}?serverTimezone=Europe/Helsinki&useSSL=true&verifyServerCertificate=true&enabledTLSProtocols=TLSv1.3\ndefault.user={{.Values.archive.catalog.database.username}}\ndefault.password={{.Values.archive.catalog.database.password}}",
       "user": "dummy-user",
       "dateUpdated": "2001-01-01 01:01:01.000",
       "progress": 0,
