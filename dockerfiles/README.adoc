@@ -1,0 +1,5 @@
+= Usage
+
+Run `podman compose build` to build the images, then run `minikube-load.sh` to load them into the Minikube.
+
+The `podman-compose.yaml` file is just reference of what container images are expected to be present and is not meant to be executed started.

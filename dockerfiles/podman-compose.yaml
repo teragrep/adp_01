@@ -1,0 +1,59 @@
+# This file is only meant for building, *NOT* running the containers.
+services:
+  # Archive related containers
+  archive-catalog:
+    image: 'localhost/teragrep/adp_01/archive/catalog:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.archive-catalog'
+  archive-journal:
+    image: 'localhost/teragrep/adp_01/archive/journal:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.archive-journal'
+  archive-s3:
+    image: 'localhost/teragrep/adp_01/archive/s3:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.archive-s3'
+  # Archive datagenerator
+  archive-datagenerator-static:
+    image: 'localhost/teragrep/adp_01/archive-datagenerator-static:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.archive-datagenerator-static'
+  # HDFS
+  hdfs:
+    image: 'localhost/teragrep/adp_01/hdfs:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.hdfs'
+  # IPA
+  ipa:
+    image: 'localhost/teragrep/adp_01/ipa:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.ipa'
+  # MariaDB
+  mariadb:
+    image: 'localhost/teragrep/adp_01/mariadb:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.mariadb'
+  # Teragrep
+  teragrep:
+    image: 'localhost/teragrep/adp_01/teragrep:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.teragrep'
+  # Yarn related containers
+  yarn-controlnode:
+    image: 'localhost/teragrep/adp_01/yarn/controlnode:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.yarn-controlnode'
+  yarn-workernode:
+    image: 'localhost/teragrep/adp_01/yarn/workernode:dev'
+    build:
+      context: './'
+      dockerfile: './Dockerfile.yarn-workernode'

@@ -2,7 +2,9 @@ FROM rockylinux:9
 RUN dnf install -y iputils freeipa-client && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
-RUN echo -e '[mariadb]\nname = MariaDB\nbaseurl = https://mirror.mariadb.org/yum/11.4/rocky9-amd64/\ngpgkey = https://rpm.mariadb.org/RPM-GPG-KEY-MariaDB\ngpgcheck = 1' > /etc/yum.repos.d/MariaDB.repo && dnf install -y MariaDB-server && dnf clean all
+# You must download these rpms yourself.
+COPY rpms/pyz_01.rpm rpms/spk_02.rpm rpms/hdp_03.rpm /rpms/
+RUN dnf install -y cronie-anacron java-11-openjdk compat-openssl11 /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
 COPY entrypoint.service /etc/systemd/system/entrypoint.service
 RUN systemctl enable entrypoint.service
 COPY scripts/patch_resolv.sh scripts/patch_hosts.sh scripts/join_ipa.sh scripts/copy_config.sh /scripts/

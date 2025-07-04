@@ -1,18 +1,19 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: teragrep
+  name: yarn-controlnode01
   namespace: {{.Release.Namespace}}
   labels:
-    app: teragrep
+    app: yarn-controlnode01
 spec:
   selector:
     matchLabels:
-      app: teragrep
+      app: yarn-controlnode01
   template:
     metadata:
       labels:
-        app: teragrep
+        app: yarn-controlnode01
     spec:
       volumes:
         - name: shareable-hdp-03-configmap
@@ -21,39 +22,26 @@ spec:
         - name: shareable-spk-02-configmap
           configMap:
             name: shareable-spk-02-configmap
-        - name: teragrep-notebook-data
-          emptyDir:
-        - name: teragrep-zep-01-configmap
+        - name: yarn-entrypoint
           configMap:
-            name: teragrep-zep-01-configmap
-        - name: teragrep-entrypoint
-          configMap:
-            name: teragrep-entrypoint
-        - name: teragrep-notebooks
-          configMap:
-            name: teragrep-notebooks
-      hostname: teragrep
+            name: yarn-entrypoint
+      hostname: yarn-controlnode01
       subdomain: tg
       containers:
-        - name: teragrep
-          image: {{.Values.containers.teragrep}}
+        - name: yarn-controlnode01
+          image: {{.Values.containers.yarn.controlnode}}
           volumeMounts:
-            - mountPath: /config/spk-02
-              name: shareable-spk-02-configmap
             - mountPath: /config/hdp-03
               name: shareable-hdp-03-configmap
-            - mountPath: /config/teragrep
-              name: teragrep-zep-01-configmap
+            - mountPath: /config/spk-02
+              name: shareable-spk-02-configmap
             - mountPath: /entrypoint.sh
-              name: teragrep-entrypoint
-              subPath: entrypoint.sh
-            - mountPath: /notebooks
-              name: teragrep-notebooks
-            - mountPath: /opt/teragrep/zep_01/notebook
-              name: teragrep-notebook-data
+              name: yarn-entrypoint
+              subPath: entrypoint-controlnode.sh
+            - mountPath: /entrypoint-common.sh
+              name: yarn-entrypoint
+              subPath: entrypoint-common.sh
           tty: true
-          ports:
-          - containerPort: 8080
           env:
           - name: IPA_DOMAIN
             value: {{.Values.ipa.domain}}
@@ -64,22 +52,22 @@ spec:
               command:
               - "/usr/bin/bash"
               - "-c"
-              - "ping -c1 -w1 ipa.{{.Values.ipa.domain}} && curl -s http://127.0.0.1:8080/health/liveness | jq -e 'has(\"dummy\") and select(.dummy.healthy==true)'"
+              - "systemctl status jobhistoryserver && systemctl status resourcemanager"
             initialDelaySeconds: 10
             timeoutSeconds: 10
             periodSeconds: 10
             successThreshold: 1
-            failureThreshold: 12
+            failureThreshold: 24
           livenessProbe:
             exec:
               command:
               - "/usr/bin/bash"
               - "-c"
-              - "ping -c1 -w1 ipa.{{.Values.ipa.domain}} && curl -s http://127.0.0.1:8080/health/liveness | jq -e 'has(\"dummy\") and select(.dummy.healthy==true)'"
+              - "ping -c1 -w1 ipa.{{.Values.ipa.domain}} && systemctl status jobhistoryserver && systemctl status resourcemanager"
             initialDelaySeconds: 10
             timeoutSeconds: 10
             periodSeconds: 10
             successThreshold: 1
-            failureThreshold: 12
+            failureThreshold: 24
           securityContext:
             privileged: {{.Values.security.privileged}}

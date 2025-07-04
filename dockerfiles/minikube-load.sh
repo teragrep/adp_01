@@ -6,10 +6,11 @@ fi;
 
 sync() {
     echo "Syncing image ${1}";
-    podman save -o "images/${1}.tar" "localhost/teragrep/teragrep-cluster/${1}:dev";
-    minikube image load "images/${1}.tar" --overwrite=true --daemon=false;
-    rm -fv "images/${1}.tar";
+    podman save -o "images/${1//\//_}.tar" "localhost/teragrep/adp_01/${1}:dev";
+    minikube image load "images/${1//\//_}.tar" --overwrite=true --daemon=false;
+    rm -fv "images/${1//\//_}.tar";
 }
-for image in teragrep ipa hdfs yarn archive archive-datagenerator-static mariadb; do
-    sync "${image}";
+
+for container in teragrep ipa yarn/workernode yarn/controlnode hdfs archive/s3 archive-datagenerator-static archive/catalog mariadb archive/journal; do
+    sync "${container}";
 done;

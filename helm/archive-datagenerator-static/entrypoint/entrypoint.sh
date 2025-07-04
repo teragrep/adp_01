@@ -1,7 +1,8 @@
 #!/bin/bash
-{{- if .Values.development.tools.archive.enabled }}
-dnf install -y {{.Values.development.tools.archive.items}}
-{{ end }}
+if [ -f /data/bootstrapped ]; then
+    echo "Already bootstrapped, remove '/data/bootstrapped' and restart container to re-do the initialization";
+    sleep inf;
+fi;
 
 # Common scripts
 bash /scripts/patch_resolv.sh;
@@ -64,4 +65,4 @@ sudo su - srv-arcv -s /usr/bin/bash -c "/usr/lib/jvm/jre-1.8.0-openjdk/bin/java 
 
 # Signal that we are ready to go
 echo "We are ready here";
-touch /datagenerator-static.ready;
+touch /data/bootstrapped;

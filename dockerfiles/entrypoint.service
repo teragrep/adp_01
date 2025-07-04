@@ -1,9 +1,10 @@
 [Unit]
 Description=Entrypoint
+ConditionPathExists=/entrypoint.sh
 
 [Service]
 Type=oneshot
-ExecStart=bash /entrypoint.sh
+ExecStart=bash -e /entrypoint.sh
 StandardInput=tty
 StandardOutput=tty
 PassEnvironment=IPA_DOMAIN IPA_PASSWORD IPA_SERVICE_HOST

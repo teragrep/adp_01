@@ -1,13 +1,13 @@
 FROM rockylinux:9
-RUN dnf install -y freeipa-client && dnf clean all
+RUN dnf install -y iputils freeipa-client && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
 # You must download these rpms yourself.
-COPY rpms/rest-01.rpm rpms/rest-02-backend.rpm rpms/rest-03-extras.rpm rpms/pth_05.rpm rpms/bos_01.rpm /rpms/
-# jq is used for patching configurations and mariadb is used for importing streamdb
+COPY rpms/rest-03-extras.rpm rpms/pth_05.rpm rpms/bos_01.rpm /rpms/
+# jq is used for patching configurations and mariadb is used for database availability and for importing streamdb
 RUN dnf install -y jq mariadb /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
 COPY entrypoint.service /etc/systemd/system/entrypoint.service
 RUN systemctl enable entrypoint.service
-COPY scripts/patch_resolv.sh scripts/patch_hosts.sh scripts/join_ipa.sh scripts/shutdown.sh scripts/copy_config.sh /scripts/
+COPY scripts/patch_resolv.sh scripts/patch_hosts.sh scripts/join_ipa.sh scripts/copy_config.sh /scripts/
 ENTRYPOINT ["/usr/sbin/init"]
 CMD ["--show-status=false"]

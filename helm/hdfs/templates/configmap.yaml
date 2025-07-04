@@ -5,7 +5,7 @@ metadata:
   name: hdfs-entrypoint
   namespace: {{.Release.Namespace}}
 data:
-{{ (tpl (.Files.Glob "entrypoint/entrypoint.sh").AsConfig .) | indent 2 }}
+{{ (tpl (.Files.Glob "entrypoint/entrypoint*.sh").AsConfig .) | indent 2 }}
 ---
 apiVersion: v1
 kind: ConfigMap

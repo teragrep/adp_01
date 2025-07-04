@@ -1,6 +1,0 @@
-image:
-  path: localhost/teragrep/teragrep-cluster/archive
-  version: dev
-  database:
-    path: localhost/teragrep/teragrep-cluster/mariadb
-    version: dev

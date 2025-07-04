@@ -16,6 +16,8 @@ spec:
         app: archive-datagenerator-static
     spec:
       volumes:
+        - name: archive-datagenerator-static-data
+          emptyDir:
         - name: archive-datagenerator-static-obj-01-configmap
           configMap:
             name: archive-datagenerator-static-obj-01-configmap
@@ -35,8 +37,10 @@ spec:
       subdomain: tg
       containers:
         - name: archive-datagenerator-static
-          image: {{.Values.image.path}}:{{.Values.image.version}}
+          image: {{index .Values.containers "archive-datagenerator-static"}}
           volumeMounts:
+            - mountPath: /data
+              name: archive-datagenerator-static-data
             - mountPath: /config/obj-01
               name: archive-datagenerator-static-obj-01-configmap
             - mountPath: /config/rest-02-data-tool
@@ -49,9 +53,6 @@ spec:
               name: archive-datagenerator-static-entrypoint
               subPath: entrypoint.sh
           tty: true
-          resources:
-            requests:
-              cpu: "0.001m"
           env:
           - name: IPA_DOMAIN
             value: {{.Values.ipa.domain}}
@@ -62,14 +63,10 @@ spec:
               command:
               - "/usr/bin/bash"
               - "-c"
-              - "[ -f /datagenerator-static.ready ]"
+              - "[ -f /data/bootstrapped ]"
             timeoutSeconds: 10
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 60
           securityContext:
             privileged: {{.Values.security.privileged}}
-          lifecycle:
-            preStop:
-              exec:
-                command: [ "/usr/bin/bash", "/scripts/shutdown.sh" ]

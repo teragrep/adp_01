@@ -1,12 +1,12 @@
 FROM rockylinux:9
-RUN dnf install -y freeipa-client cronie-anacron && dnf clean all
+RUN dnf install -y iputils freeipa-client && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
 # You must download these rpms yourself.
 COPY rpms/hdp_03.rpm rpms/hdp_04.rpm /rpms/
-RUN dnf install -y java-11-openjdk /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
+RUN dnf install -y cronie-anacron java-11-openjdk /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
 COPY entrypoint.service /etc/systemd/system/entrypoint.service
 RUN systemctl enable entrypoint.service
-COPY scripts/patch_resolv.sh scripts/patch_hosts.sh scripts/join_ipa.sh scripts/shutdown.sh scripts/copy_config.sh /scripts/
+COPY scripts/patch_resolv.sh scripts/patch_hosts.sh scripts/join_ipa.sh scripts/copy_config.sh /scripts/
 ENTRYPOINT ["/usr/sbin/init"]
 CMD ["--show-status=false"]

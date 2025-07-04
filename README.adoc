@@ -19,27 +19,23 @@ The `config.yaml` values file contains all "meta" and shareable configuration li
 
 The `shareable` module contains all shareable configuration files.
 
-The `${MODULE}/values.yaml` inside each module will contain module-specific values.
-
 The application-specific configurations for all modules can be found inside `${MODULE}/config` directories.
 
 == Usage
 
 All helm related files can be found in directory `helm/`.
 
-You can use alternative values files by passing any argument, f.ex. `./recreate.sh XXX` will use `config-XXX.yaml` and `${MODULE}/values-XXX.yaml` files instead of `config.yaml` and `${MODULE}/values.yaml`.
-
-Run `./recreate.sh [alternate-values-file-suffix]` to create the cluster. Convenience script, internally uses `stop.sh` and `install.sh` scripts.
+Run `./recreate.sh` to create the cluster in correct order. Convenience script, internally uses `stop.sh` and `install.sh` scripts.
 
 Run `./stop.sh` to destroy the cluster. Convenience script, internally uses `uninstall.sh` script.
 
-Run `./install.sh module-name [alternative-values-file-suffix]` to (re-)install a module. Existing installation will be uninstalled first.
+Run `./install.sh module-name` to (re-)install a module. Existing installation will be uninstalled first.
 
 Run `./uninstall.sh module-name` to uninstall a module.
 
 == Tips
 
-It is helpful to run `kubectl config set-context --current --namespace=teragrep` to avoid having to run `--namespace teragrep` on every step.
+It is helpful to run `kubectl config set-context --current --namespace=teragrep` to avoid having to run `--namespace teragrep` on every step. Alternatively start minikube with `--namespace=teragrep` argument.
 
 You might need to increase `fs.inotify.max_user_instances` in case of `Failed to create inotify object: Too many open files` happening.
 
@@ -65,6 +61,6 @@ Expected files to be inside `dockerfiles/rpms/` directory:
   - `spk_03.rpm`
   - `zep_01.rpm`
 
-The scripts `build-dev.sh` and `minikube-load.sh` under `dockerfiles/` directory will build and load the wanted images using podman to your local `Minikube` cluster. These containers can then be used by passing `dev` argument to the relevant scripts, read more under `Usage`.
+Read `dockerfiles/README.adoc` for information.
 
 Be sure to uninstall any running modules to make sure the container images are properly updated.

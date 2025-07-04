@@ -68,7 +68,7 @@
       "dateFinished": "2001-01-01 01:01:01.000"
     },
     {
-      "text": "%jdbc\nselect version();\nSHOW GLOBAL VARIABLES LIKE '%tls%';\nSHOW GLOBAL VARIABLES LIKE '%ssl%';\nuse {{.Values.archive.catalog.database.name}};\nshow tables;",
+      "text": "%jdbc\nselect CURRENT_DATE(), CURRENT_TIME();\nselect version();\nSHOW GLOBAL VARIABLES LIKE '%tls%';\nSHOW GLOBAL VARIABLES LIKE '%ssl%';\nuse {{.Values.archive.catalog.database.name}};\nshow tables;",
       "user": "dummy-user",
       "dateUpdated": "2001-01-01 01:01:01.000",
       "progress": 0,

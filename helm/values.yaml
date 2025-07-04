@@ -1,3 +1,25 @@
+# Containers used.
+containers:
+  # Archive related containers
+  archive:
+    catalog: localhost/teragrep/adp_01/archive/catalog:dev
+    journal: localhost/teragrep/adp_01/archive/journal:dev
+    s3: localhost/teragrep/adp_01/archive/s3:dev
+  # Data generator
+  archive-datagenerator-static: localhost/teragrep/adp_01/archive-datagenerator-static:dev
+  # HDFS - Datanode and Namenode uses same image.
+  hdfs: localhost/teragrep/adp_01/hdfs:dev
+  # IPA
+  ipa: localhost/teragrep/adp_01/ipa:dev
+  # Generic MariaDB container that is reused wherever necessary.
+  mariadb: localhost/teragrep/adp_01/mariadb:dev
+  # Teragrep
+  teragrep: localhost/teragrep/adp_01/teragrep:dev
+  # Yarn
+  yarn:
+    controlnode: localhost/teragrep/adp_01/yarn/controlnode:dev
+    workernode: localhost/teragrep/adp_01/yarn/workernode:dev
+
 # Everything needed for managing IPA
 ipa:
   # Same password is used for both admin and manager.
@@ -44,32 +66,6 @@ ipa:
 security:
   # Whether privileged mode should be used for containers. This can be potentially huge vulnerability but systemd based containers might not run without it.
   privileged: "true"
-
-# Global resource limits
-resources:
-  # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-  # 1000m = 1 CPU
-  yarn:
-    controlnode:
-      cpu: 250m
-    workernode:
-      cpu: 1000m
-  hdfs:
-    namenode:
-      cpu: 1000m
-    datanode:
-      cpu: 1000m
-  archive:
-    journal:
-      cpu: 1000m
-    journaldatabase:
-      cpu: 1000m
-    catalog:
-      cpu: 1000m
-    catalogdatabase:
-      cpu: 1000m
-    s3:
-      cpu: 1000m
 
 # Global yarn related configurations
 yarn:
@@ -130,23 +126,3 @@ archive:
     # Well known example key and secret: https://docs.aws.amazon.com/STS/latest/APIReference/API_GetAccessKeyInfo.html
     accesskey: AKIAIOSFODNN7EXAMPLE
     secret: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-
-# Development related extras
-development:
-  # Install certain tools automatically on startup
-  tools:
-    ipa:
-      enabled: false
-      items: "jq emacs-nox"
-    teragrep:
-      enabled: false
-      items: "jq emacs-nox"
-    yarn:
-      enabled: false
-      items: "jq emacs-nox"
-    hdfs:
-      enabled: false
-      items: "jq emacs-nox"
-    archive:
-      enabled: false
-      items: "emacs-nox"

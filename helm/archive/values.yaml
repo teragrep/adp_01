@@ -1,6 +1,0 @@
-image:
-  path: ghcr.io/teragrep/teragrep-cluster/archive
-  version: 1.0.0
-  database:
-    path: ghcr.io/teragrep/teragrep-cluster/mariadb
-    version: 1.0.0

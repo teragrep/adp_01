@@ -1,0 +1,74 @@
+{{- range tuple "datanode01" "datanode02" "datanode03" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hdfs-{{.}}
+  namespace: {{$.Release.Namespace}}
+  labels:
+    app: hdfs-{{.}}
+spec:
+  selector:
+    matchLabels:
+      app: hdfs-{{.}}
+  template:
+    metadata:
+      labels:
+        app: hdfs-{{.}}
+    spec:
+      volumes:
+        - name: shareable-hdp-03-configmap
+          configMap:
+            name: shareable-hdp-03-configmap
+        - name: hdfs-entrypoint
+          configMap:
+            name: hdfs-entrypoint
+        - name: hdfs-dfs-{{.}}
+          emptyDir:
+      hostname: hdfs-{{.}}
+      subdomain: tg
+      containers:
+        - name: hdfs-{{.}}
+          image: {{$.Values.containers.hdfs}}
+          volumeMounts:
+            - mountPath: /opt/teragrep/dfs/
+              name: hdfs-dfs-{{.}}
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /entrypoint.sh
+              name: hdfs-entrypoint
+              subPath: entrypoint-datanode.sh
+            - mountPath: /entrypoint-common.sh
+              name: hdfs-entrypoint
+              subPath: entrypoint-common.sh
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{$.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{$.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status datanode"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          livenessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "ping -c1 -w1 ipa.{{$.Values.ipa.domain}} && systemctl status datanode"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          securityContext:
+            privileged: {{$.Values.security.privileged}}
+{{- end}}

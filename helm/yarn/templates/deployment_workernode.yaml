@@ -1,0 +1,75 @@
+{{- range tuple "workernode01" "workernode02" "workernode03" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yarn-{{.}}
+  namespace: {{$.Release.Namespace}}
+  labels:
+    app: yarn-{{.}}
+spec:
+  selector:
+    matchLabels:
+      app: yarn-{{.}}
+  template:
+    metadata:
+      labels:
+        app: yarn-{{.}}
+    spec:
+      volumes:
+        - name: shareable-hdp-03-configmap
+          configMap:
+            name: shareable-hdp-03-configmap
+        - name: shareable-spk-02-configmap
+          configMap:
+            name: shareable-spk-02-configmap
+        - name: yarn-entrypoint
+          configMap:
+            name: yarn-entrypoint
+      hostname: yarn-{{.}}
+      subdomain: tg
+      containers:
+        - name: yarn-{{.}}
+          image: {{$.Values.containers.yarn.workernode}}
+          volumeMounts:
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /config/spk-02
+              name: shareable-spk-02-configmap
+            - mountPath: /entrypoint.sh
+              name: yarn-entrypoint
+              subPath: entrypoint-workernode.sh
+            - mountPath: /entrypoint-common.sh
+              name: yarn-entrypoint
+              subPath: entrypoint-common.sh
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{$.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{$.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status nodemanager"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 24
+          livenessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "ping -c1 -w1 ipa.{{$.Values.ipa.domain}} && systemctl status nodemanager"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 24
+          securityContext:
+            privileged: {{$.Values.security.privileged}}
+{{- end}}
