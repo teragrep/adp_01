@@ -9,5 +9,13 @@ create_host() {
 }
 
 {{- range $host, $services := .Values.ipa.hosts }}
-create_host {{$host}} {{$services }};
+create_host {{$host}} {{$services}};
 {{- end }}
+
+# Special case for autocreating yarn and hdfs nodes
+{{- range untilStep 1 (max 1 (.Values.hdfs.nodes) | add1 | int) 1 }}
+create_host hdfs-datanode{{printf "%02d" .}} {{index $.Values.ipa.hostgroups "hdfs-datanode"}};
+{{- end}}
+{{- range untilStep 1 (max 1 (.Values.yarn.nodes) | add1 | int) 1 }}
+create_host yarn-workernode{{printf "%02d" .}} {{index $.Values.ipa.hostgroups "yarn-workernode"}};
+{{- end}}

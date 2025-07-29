@@ -33,18 +33,17 @@ ipa:
   hosts:
     # Hosts zep_01, ajs_01 and all that
     teragrep: zeppelin
-
-    # Yarn: Job History Server, Resource Manager and Node Managers
+    # Yarn: Job History Server and Resource Manager
     yarn-controlnode01: HTTP jobhistoryserver resourcemanager
-    yarn-workernode01: HTTP nodemanager
-    yarn-workernode02: HTTP nodemanager
-    yarn-workernode03: HTTP nodemanager
-
-    # HDFS: Namenode and datanodes. Namenode runs also hdp_04
+    # HDFS: Namenode. Namenode runs also hdp_04.
     hdfs-namenode01: HTTP namenode srv-hdp_04
-    hdfs-datanode01: HTTP datanode
-    hdfs-datanode02: HTTP datanode
-    hdfs-datanode03: HTTP datanode
+
+  # These host groups are done dynamically depending on the nodes values. The hosts will have 01-nn suffix.
+  hostgroups:
+    # Amount of workernodes is managed by .yarn.nodes value
+    yarn-workernode: HTTP nodemanager
+    # Amount of datanodes is managed by .hdfs.nodes value
+    hdfs-datanode: HTTP datanode
 
   # Should not be used directly but required for services.
   serviceusers:
@@ -69,6 +68,8 @@ security:
 
 # Global yarn related configurations
 yarn:
+  # How many workernodes are provisioned. Minimum 1.
+  nodes: 3
   # These resources are *per node*
   resources:
     # Memory in megabytes.
@@ -82,6 +83,8 @@ yarn:
 
 # Global hdfs related configurations
 hdfs:
+  # How many hdfs datanodes are provisioned. Minimum 1. The replication factor is also the same as node amount.
+  nodes: 3
   superusergroup: hdfs
   administrators: hdfs
   jkspassword: jksp4ssw0rd

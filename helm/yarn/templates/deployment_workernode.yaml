@@ -1,20 +1,21 @@
-{{- range tuple "workernode01" "workernode02" "workernode03" }}
+# The end of range is not inclusive so one needs to be added.
+{{- range untilStep 1 (max 1 (.Values.yarn.nodes) | add1 | int) 1 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: yarn-{{.}}
+  name: yarn-workernode{{printf "%02d" .}}
   namespace: {{$.Release.Namespace}}
   labels:
-    app: yarn-{{.}}
+    app: yarn-workernode{{printf "%02d" .}}
 spec:
   selector:
     matchLabels:
-      app: yarn-{{.}}
+      app: yarn-workernode{{printf "%02d" .}}
   template:
     metadata:
       labels:
-        app: yarn-{{.}}
+        app: yarn-workernode{{printf "%02d" .}}
     spec:
       volumes:
         - name: shareable-hdp-03-configmap
@@ -26,10 +27,10 @@ spec:
         - name: yarn-entrypoint
           configMap:
             name: yarn-entrypoint
-      hostname: yarn-{{.}}
+      hostname: yarn-workernode{{printf "%02d" .}}
       subdomain: tg
       containers:
-        - name: yarn-{{.}}
+        - name: yarn-workernode{{printf "%02d" .}}
           image: {{$.Values.containers.yarn.workernode}}
           volumeMounts:
             - mountPath: /config/hdp-03

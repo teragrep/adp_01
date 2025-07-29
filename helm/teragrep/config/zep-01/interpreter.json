@@ -159,7 +159,7 @@
         },
         "spark.driver.memory": {
           "name": "spark.driver.memory",
-          "value": "1g",
+          "value": "512m",
           "type": "string",
           "description": "Amount of memory to use for the driver process, i.e. where SparkContext is initialized, in the same format as JVM memory strings with a size unit suffix (\"k\", \"m\", \"g\" or \"t\") (e.g. 512m, 2g)."
         },
@@ -171,7 +171,7 @@
         },
         "spark.executor.memory": {
           "name": "spark.executor.memory",
-          "value": "1g",
+          "value": "512m",
           "type": "string",
           "description": "Executor memory per worker instance. ex) 512m, 32g"
         },
