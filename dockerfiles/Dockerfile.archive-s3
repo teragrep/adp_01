@@ -1,11 +1,13 @@
 FROM rockylinux:9
-RUN dnf install -y iputils freeipa-client && dnf clean all
+RUN dnf install -y iputils freeipa-client wget && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
 # You must download these rpms yourself.
-COPY rpms/rest-03-extras.rpm rpms/pth_05.rpm rpms/bos_01.rpm /rpms/
-# jq is used for patching configurations and mariadb is used for database availability and for importing streamdb
-RUN dnf install -y jq mariadb /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
+COPY rpms/rest-03-extras.rpm /rpms/
+# Download and install packages. jq is used for patching configurations and mariadb is used for database availability and for importing streamdb
+RUN wget --quiet https://github.com/teragrep/bos_01/releases/download/2.1.0/com.teragrep-bos_01-2.1.0-2.noarch.rpm --output-document /rpms/bos_01.rpm && \
+  wget --quiet https://github.com/teragrep/pth_05/releases/download/2.0.6/com.teragrep-pth_05-2.0.6-1.noarch.rpm --output-document /rpms/pth_05.rpm && \
+  dnf install -y jq mariadb /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
 COPY entrypoint.service /etc/systemd/system/entrypoint.service
 RUN systemctl enable entrypoint.service
 COPY scripts/patch_resolv.sh scripts/patch_hosts.sh scripts/join_ipa.sh scripts/copy_config.sh /scripts/

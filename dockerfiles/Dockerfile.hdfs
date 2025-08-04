@@ -1,10 +1,12 @@
 FROM rockylinux:9
-RUN dnf install -y iputils freeipa-client && dnf clean all
+RUN dnf install -y iputils freeipa-client wget && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
 # You must download these rpms yourself.
-COPY rpms/hdp_03.rpm rpms/hdp_04.rpm /rpms/
-RUN dnf install -y cronie-anacron java-11-openjdk /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
+COPY rpms/hdp_03.rpm /rpms/
+# FIXME: StrongestNumber9 repository release instead of teragrep
+RUN wget --quiet https://github.com/StrongestNumber9/hdp_04/releases/download/0.0.9/com.teragrep-hdp_04-0.0.9-1.noarch.rpm --output-document /rpms/hdp_04.rpm && \
+  dnf install -y cronie-anacron java-11-openjdk /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
 COPY entrypoint.service /etc/systemd/system/entrypoint.service
 RUN systemctl enable entrypoint.service
 COPY scripts/patch_resolv.sh scripts/patch_hosts.sh scripts/join_ipa.sh scripts/copy_config.sh /scripts/

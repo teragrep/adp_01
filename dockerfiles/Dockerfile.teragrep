@@ -1,11 +1,13 @@
 FROM rockylinux:9
-RUN dnf install -y iputils freeipa-client && dnf clean all
+RUN dnf install -y iputils freeipa-client wget && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
 # You must download these rpms yourself.
-COPY rpms/ajs_01.rpm rpms/zep_01.rpm rpms/hdp_03.rpm rpms/pth_10.rpm rpms/pyz_01.rpm rpms/spk_02.rpm rpms/spk_03.rpm /rpms/
-RUN dnf install -y jq cronie-anacron wget /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
-RUN wget --quiet https://dlm.mariadb.com/4234102/Connectors/java/connector-java-3.5.3/mariadb-java-client-3.5.3.jar -O /opt/teragrep/zep_01/interpreter/jdbc/mariadb-java-client-3.5.3.jar && chmod 755 /opt/teragrep/zep_01/interpreter/jdbc/mariadb-java-client-3.5.3.jar
+COPY rpms/ajs_01.rpm rpms/hdp_03.rpm rpms/pyz_01.rpm rpms/spk_02.rpm rpms/spk_03.rpm /rpms/
+RUN wget --quiet https://github.com/teragrep/pth_10/releases/download/8.4.2/com.teragrep-pth_10-8.4.2-1.noarch.rpm --output-document /rpms/pth_10.rpm && \
+  wget --quiet https://github.com/teragrep/zep_01/releases/download/2.0.1/com.teragrep-zep_01-2.0.1-1.x86_64.rpm --output-document /rpms/zep_01.rpm && \
+  dnf install -y jq cronie-anacron wget /rpms/*.rpm && rm -rfv /rpms/ && dnf clean all
+RUN wget --quiet https://dlm.mariadb.com/4234102/Connectors/java/connector-java-3.5.3/mariadb-java-client-3.5.3.jar --output-document /opt/teragrep/zep_01/interpreter/jdbc/mariadb-java-client-3.5.3.jar && chmod 755 /opt/teragrep/zep_01/interpreter/jdbc/mariadb-java-client-3.5.3.jar
 RUN echo "* * * * * srv-zpln bash -c 'KRB5CCNAME=\"/tmp/krb5cc_\${UID}\" kinit -kt /opt/teragrep/zep_01/keytabs/zep_01.keytab -p zep_01/\$(hostname)'" > /etc/cron.d/zep_01-kinit.crontab
 COPY entrypoint.service /etc/systemd/system/entrypoint.service
 RUN systemctl enable entrypoint.service
