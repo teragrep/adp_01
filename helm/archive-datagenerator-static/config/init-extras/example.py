@@ -6,13 +6,13 @@ basepath = "/srv/data/spool"
 host="example.{{.Values.ipa.domain}}"
 tag="example"
 # Starting timestamp
-epoch = 1696464000 # Your time zone: Thursday, October 5, 2023 3:00:00 GMT+03:00 DST
+starting_epoch = 1696464000 # Your time zone: Thursday, October 5, 2023 3:00:00 GMT+03:00 DST
 for message in range(1,4):
     for hour in range(1,4):
         # Bump timestamp by n hours
-        new_epoch=epoch + hour*3600
+        new_epoch = starting_epoch + hour*3600
         # Get epoch hour, floored
-        epoch_hour = epoch - epoch%3600
+        epoch_hour = new_epoch - new_epoch%3600
         timestamp = datetime.datetime.fromtimestamp(new_epoch, timezone)
         dirname=f"{basepath}/{host}/{timestamp.year}/{str(timestamp.month).zfill(2)}/{str(timestamp.day).zfill(2)}"
         filename=f"{dirname}/{tag}-@{epoch_hour}-{timestamp.year}{str(timestamp.month).zfill(2)}{str(timestamp.day).zfill(2)}{str(timestamp.hour).zfill(2)}.log"
