@@ -1,0 +1,4 @@
+= Good to know
+All `*.sh` files here are executed automatically on startup.
+
+The configmap `init-extras` will have any other scripts you might want to run, it'll be mounted in `/init-extras`

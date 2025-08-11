@@ -1,0 +1,15 @@
+metadata:
+  name: teragrep-nodeport
+  namespace: {{.Release.Namespace}}
+apiVersion: v1
+kind: Service
+spec:
+  sessionAffinity: None
+  selector:
+    app: teragrep
+  ports:
+  - protocol: TCP
+    port: 8080
+    name: teragrep
+    targetPort: 8080
+  type: NodePort

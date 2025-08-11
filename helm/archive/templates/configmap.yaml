@@ -1,0 +1,27 @@
+{{- range tuple "rest-01" "rest-01-database" "rest-02-backend" "rest-02-backend-database" "pth-05" "bos-01" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: archive-{{.}}-configmap
+  namespace: {{$.Release.Namespace}}
+data:
+{{- $path := printf "config/%s/*" . }}
+{{ (tpl ($.Files.Glob $path).AsConfig $) | indent 2 }}
+{{end}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: archive-entrypoint
+  namespace: {{.Release.Namespace}}
+data:
+{{ (tpl (.Files.Glob "entrypoint/entrypoint*.sh").AsConfig .) | indent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: archive-database-shared
+  namespace: {{.Release.Namespace}}
+data:
+{{ (tpl (.Files.Glob "config/database-shared/*").AsConfig .) | indent 2 }}

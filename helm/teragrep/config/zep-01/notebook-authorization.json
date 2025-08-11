@@ -1,0 +1,10 @@
+{
+  "authInfo": {
+    "2KBT98JRX": {
+      "readers": [ "tg-users" ],
+      "owners": [ "tg-admins" ],
+      "writers": [ "tg-users" ],
+      "runners": [ "tg-users" ]
+    }
+  }
+}

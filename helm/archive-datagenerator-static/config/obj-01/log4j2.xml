@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration monitorInterval="30" status="INFO">
+  <Properties>
+    <Property name="LOG_PATH">/opt/Fail-Safe/obj-01/logs</Property>
+    <Property name="LOG_NAME_DAILY">log-archiver-batch-daily</Property>
+    <Property name="LOG_NAME_AUDIT">log-archiver-batch-audit</Property>
+    <Property name="LOG_NAME_METRIC">log-archiver-batch-metric</Property>
+    <Property name="applicationName">log-archiver-batch</Property>
+  </Properties>
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss.SSS} [%level] %logger [thread=%thread, %msg]%ex%n" />
+    </Console>
+    <RollingFile name="FileAppender-Audit" fileName="${LOG_PATH}/${LOG_NAME_AUDIT}.log" filePattern="${LOG_PATH}/${LOG_NAME_AUDIT}-%d{yyyy-MM-dd}.%i.log.gz" immediateFlush="true">
+      <Append>true</Append>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="200 MB" />
+        <TimeBasedTriggeringPolicy />
+      </Policies>
+      <!-- Create filter to pass through only AUDIT labeled messages -->
+      <Filters>
+        <MarkerFilter marker="AUDIT">
+          <onMismatch>DENY</onMismatch>
+          <onMatch>ACCEPT</onMatch>
+        </MarkerFilter>
+      </Filters>
+      <PatternLayout>
+        <Pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%level] %logger [thread=%thread, userId=%X{security.user.id}, sessionId=%X{session.id}, requestId=%X{security.request.id}, SUBJECT=%X{audit.subject}, VERB=%X{audit.verb}, OBJECT=%X{audit.object}, OUTCOME=%X{audit.outcome}, message=%msg]%ex{0}%n</Pattern>
+      </PatternLayout>
+    </RollingFile>
+    <RollingFile name="FileAppender-Daily" fileName="${LOG_PATH}/${LOG_NAME_DAILY}.log" filePattern="${LOG_PATH}/${LOG_NAME_DAILY}-%d{yyyy-MM-dd}.%i.log.gz" immediateFlush="true">
+      <Append>true</Append>
+      <PatternLayout>
+        <Pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%level] %logger [thread=%thread, userId=%X{security.user.id}, sessionId=%X{session.id}, requestId=%X{security.request.id}, runId=%X{run.id}, message=%msg]%ex%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="200 MB" />
+        <TimeBasedTriggeringPolicy />
+      </Policies>
+      <!-- exclude audit logging -->
+      <Filters>
+        <MarkerFilter marker="AUDIT" onMismatch="NEUTRAL" onMatch="DENY" />
+        <MarkerFilter marker="METRIC" onMismatch="ACCEPT" onMatch="DENY" />
+      </Filters>
+    </RollingFile>
+    <RollingFile name="FileAppender-Metric" fileName="${LOG_PATH}/${LOG_NAME_METRIC}.log" filePattern="${LOG_PATH}/${LOG_NAME_METRIC}-%d{yyyy-MM-dd}.%i.log.gz" immediateFlush="true">
+      <Append>true</Append>
+      <PatternLayout>
+        <Pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%level] %logger [sessionId=%X{session.id}, runId=%X{run.id}, message=%msg]%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="200 MB" />
+        <TimeBasedTriggeringPolicy />
+      </Policies>
+      <!-- include metric logging only -->
+      <Filters>
+        <MarkerFilter marker="METRIC" onMismatch="DENY" onMatch="ACCEPT" />
+      </Filters>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="fi.failsafe.archive">
+      <AppenderRef ref="FileAppender-Daily" />
+      <AppenderRef ref="FileAppender-Audit" />
+      <AppenderRef ref="FileAppender-Metric" />
+    </Logger>
+    <Root level="INFO">
+      <AppenderRef ref="STDOUT" />
+      <MarkerFilter marker="METRIC" onMismatch="ACCEPT" onMatch="DENY" />
+    </Root>
+  </Loggers>
+</Configuration>

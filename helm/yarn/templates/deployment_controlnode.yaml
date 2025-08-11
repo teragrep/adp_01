@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yarn-controlnode01
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: yarn-controlnode01
+spec:
+  selector:
+    matchLabels:
+      app: yarn-controlnode01
+  template:
+    metadata:
+      labels:
+        app: yarn-controlnode01
+    spec:
+      volumes:
+        - name: shareable-hdp-03-configmap
+          configMap:
+            name: shareable-hdp-03-configmap
+        - name: shareable-spk-02-configmap
+          configMap:
+            name: shareable-spk-02-configmap
+        - name: yarn-entrypoint
+          configMap:
+            name: yarn-entrypoint
+      hostname: yarn-controlnode01
+      subdomain: tg
+      containers:
+        - name: yarn-controlnode01
+          image: {{.Values.containers.yarn.controlnode}}
+          volumeMounts:
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /config/spk-02
+              name: shareable-spk-02-configmap
+            - mountPath: /entrypoint.sh
+              name: yarn-entrypoint
+              subPath: entrypoint-controlnode.sh
+            - mountPath: /entrypoint-common.sh
+              name: yarn-entrypoint
+              subPath: entrypoint-common.sh
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status jobhistoryserver && systemctl status resourcemanager"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 24
+          livenessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "ping -c1 -w1 ipa.{{.Values.ipa.domain}} && systemctl status jobhistoryserver && systemctl status resourcemanager"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 24
+          securityContext:
+            privileged: {{.Values.security.privileged}}

@@ -1,0 +1,101 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hdfs-namenode01
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: hdfs-namenode01
+spec:
+  selector:
+    matchLabels:
+      app: hdfs-namenode01
+  template:
+    metadata:
+      labels:
+        app: hdfs-namenode01
+    spec:
+      volumes:
+        - name: hdfs-dfs-namenode01
+          emptyDir:
+        - name: shareable-hdp-03-configmap
+          configMap:
+            name: shareable-hdp-03-configmap
+        - name: hdfs-hdp-04-configmap
+          configMap:
+            name: hdfs-hdp-04-configmap
+        - name: hdfs-entrypoint
+          configMap:
+            name: hdfs-entrypoint
+      hostname: hdfs-namenode01
+      subdomain: tg
+      initContainers:
+        - name: hdfs-namenode01-init
+          image: {{.Values.containers.hdfs}}
+          volumeMounts:
+            - mountPath: /opt/teragrep/dfs/
+              name: hdfs-dfs-namenode01
+            - mountPath: /config/hdp-04
+              name: hdfs-hdp-04-configmap
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /entrypoint.sh
+              name: hdfs-entrypoint
+              subPath: entrypoint-init-namenode.sh
+            - mountPath: /entrypoint-common.sh
+              name: hdfs-entrypoint
+              subPath: entrypoint-common.sh
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          securityContext:
+            privileged: {{.Values.security.privileged}}
+      containers:
+        - name: hdfs-namenode01
+          image: {{.Values.containers.hdfs}}
+          volumeMounts:
+            - mountPath: /opt/teragrep/dfs/
+              name: hdfs-dfs-namenode01
+            - mountPath: /config/hdp-04
+              name: hdfs-hdp-04-configmap
+            - mountPath: /config/hdp-03
+              name: shareable-hdp-03-configmap
+            - mountPath: /entrypoint.sh
+              name: hdfs-entrypoint
+              subPath: entrypoint-namenode.sh
+            - mountPath: /entrypoint-common.sh
+              name: hdfs-entrypoint
+              subPath: entrypoint-common.sh
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status namenode"
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          livenessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "ping -c1 -w1 ipa.{{.Values.ipa.domain}} && systemctl status namenode"
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          securityContext:
+            privileged: {{.Values.security.privileged}}

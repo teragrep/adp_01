@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>yarn-controlnode01.{{.Values.ipa.domain | lower}}:10020</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>yarn-controlnode01.{{.Values.ipa.domain | lower}}:19888</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.webapp.https.address</name>
+    <value>yarn-controlnode01.{{.Values.ipa.domain | lower}}:22333</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.admin.address</name>
+    <value>yarn-controlnode01.{{.Values.ipa.domain | lower}}:33366</value>
+  </property>
+  <property>
+    <name>mapreduce.shuffle.port</name>
+    <value>13562</value>
+  </property>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.staging-dir</name>
+    <value>/logs/hadoop-yarn/staging</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.done-dir</name>
+    <value>/mr-history/done</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.intermediate-done-dir</name>
+    <value>/mr-history/tmp</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.env</name>
+    <value>HADOOP_MAPRED_HOME=/opt/teragrep/hdp_03</value>
+  </property>
+  <property>
+    <name>mapreduce.map.env</name>
+    <value>HADOOP_MAPRED_HOME=/opt/teragrep/hdp_03</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.env</name>
+    <value>HADOOP_MAPRED_HOME=/opt/teragrep/hdp_03</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.keytab</name>
+    <value>/opt/teragrep/hdp_03/keytabs/jobhistoryserver.service.keytab</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.principal</name>
+    <value>jobhistoryserver/_HOST@{{.Values.ipa.domain | upper}}</value>
+  </property>
+</configuration>

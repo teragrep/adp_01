@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archive-s3
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: archive-s3
+spec:
+  selector:
+    matchLabels:
+      app: archive-s3
+  template:
+    metadata:
+      labels:
+        app: archive-s3
+    spec:
+      volumes:
+        - name: archive-pth-05-data
+          emptyDir:
+        - name: archive-pth-05-configmap
+          configMap:
+            name: archive-pth-05-configmap
+        - name: archive-bos-01-configmap
+          configMap:
+            name: archive-bos-01-configmap
+        - name: archive-entrypoint
+          configMap:
+            name: archive-entrypoint
+        - name: archive-database-shared
+          configMap:
+            name: archive-database-shared
+      hostname: archive-s3
+      subdomain: tg
+      containers:
+        - name: archive-s3
+          image: {{.Values.containers.archive.s3}}
+          volumeMounts:
+            - mountPath: /srv
+              name: archive-pth-05-data
+            - mountPath: /config/pth-05/
+              name: archive-pth-05-configmap
+            - mountPath: /config/bos-01/
+              name: archive-bos-01-configmap
+            - mountPath: /entrypoint-common.sh
+              name: archive-entrypoint
+              subPath: entrypoint-common.sh
+            - mountPath: /entrypoint.sh
+              name: archive-entrypoint
+              subPath: entrypoint-s3.sh
+            - mountPath: /etc/my.cnf.d/enforce_tls.cnf
+              name: archive-database-shared
+              subPath: enforce_tls.cnf
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status bos_01 && systemctl status pth_05"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          livenessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "ping -c1 -w1 ipa.{{.Values.ipa.domain}} && systemctl status bos_01 && systemctl status pth_05"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          securityContext:
+            privileged: {{.Values.security.privileged}}

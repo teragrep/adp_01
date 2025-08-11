@@ -1,47 +1,66 @@
-// Before publishing your new repository:
-// 1. Write the readme file
-// 2. Update the issues link in Contributing section in the readme file
-// 3. Update the discussion link in config.yml file in .github/ISSUE_TEMPLATE directory
+= Teragrep Cluster Helm Charts
 
-= repo-template
+The documentation and repository aims to:
+  - Provide everything necessary to run the whole Teragrep Cluster and associated components.
+  - Make development and rapid iterations easy for the developers.
+  - Make multiple parallel deployments possible.
 
-// Add a short description of your project. Tell what your project does and what it's used for.
+The user is expected to have `Helm` and supported version of `Kubernetes` cluster installed with basic know-how how to operate them.
 
-This is a template repository for Teragrep organization.
+Tested on link:https://minikube.sigs.k8s.io/docs/drivers/kvm2/[Minikube with KVM2 driver.]
 
-== Features
+== Requirements
 
-// List your project's features
+- link:https://helm.sh/docs/topics/version_skew/#supported-version-skew[Helm 3.x.x and supported version of Kubernetes running.]
 
-== Documentation
+== Configurations
 
-See the official documentation on https://docs.teragrep.com[docs.teragrep.com].
+The `config.yaml` values file contains all "meta" and shareable configuration lines and is needed by `Helm`.
 
-== Limitations
+The `shareable` module contains all shareable configuration files.
 
-// If your project has limitations, please list them. Otherwise remove this section.
+The application-specific configurations for all modules can be found inside `${MODULE}/config` directories.
 
-== How to [compile/use/implement]
+== Usage
 
-// add instructions how people can start to use your project
+All helm related files can be found in directory `helm/`.
 
-== Contributing
+Run `./recreate.sh` to create the cluster in correct order. Convenience script, internally uses `stop.sh` and `install.sh` scripts.
 
-// Change the repository name in the issues link to match with your project's name
+Run `./stop.sh` to destroy the cluster. Convenience script, internally uses `uninstall.sh` script.
 
-You can involve yourself with our project by https://github.com/teragrep/repo-template/issues/new/choose[opening an issue] or submitting a pull request.
+Run `./install.sh module-name` to (re-)install a module. Existing installation will be uninstalled first.
 
-Contribution requirements:
+Run `./uninstall.sh module-name` to uninstall a module.
 
-. *All changes must be accompanied by a new or changed test.* If you think testing is not required in your pull request, include a sufficient explanation as why you think so.
-. Security checks must pass
-. Pull requests must align with the principles and http://www.extremeprogramming.org/values.html[values] of extreme programming.
-. Pull requests must follow the principles of Object Thinking and Elegant Objects (EO).
+== Tips
 
-Read more in our https://github.com/teragrep/teragrep/blob/main/contributing.adoc[Contributing Guideline].
+It is helpful to run `kubectl config set-context --current --namespace=teragrep` to avoid having to run `--namespace teragrep` on every step. Alternatively start minikube with `--namespace=teragrep` argument.
 
-=== Contributor License Agreement
+You might need to increase `fs.inotify.max_user_instances` in case of `Failed to create inotify object: Too many open files` happening.
 
-Contributors must sign https://github.com/teragrep/teragrep/blob/main/cla.adoc[Teragrep Contributor License Agreement] before a pull request is accepted to organization's repositories.
+== Development
 
-You need to submit the CLA only once. After submitting the CLA you can contribute to all Teragrep's repositories.
+The rpm files have to be provided by the user as this repository do not contain them directly. All other files for building container images can be found under `dockerfiles` directory.
+
+Expected files to be inside `dockerfiles/rpms/` directory:
+
+  - `ajs_01.rpm`
+  - `bos_01.rpm`
+  - `hdp_03.rpm`
+  - `hdp_04.rpm`
+  - `obj-01.rpm`
+  - `pth_05.rpm`
+  - `pth_10.rpm`
+  - `pyz_01.rpm`
+  - `rest-01.rpm`
+  - `rest-02-backend.rpm`
+  - `rest-02-data-tool.rpm`
+  - `rest-03-extras.rpm`
+  - `spk_02.rpm`
+  - `spk_03.rpm`
+  - `zep_01.rpm`
+
+Read `dockerfiles/README.adoc` for information.
+
+Be sure to uninstall any running modules to make sure the container images are properly updated.

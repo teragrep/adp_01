@@ -1,0 +1,5 @@
+apiVersion: v2
+name: archive-datagenerator-static
+description: An oneshot archive datagenerator that creates static set of files and stays inactive after.
+version: 1.0.0
+appVersion: 1.0.0

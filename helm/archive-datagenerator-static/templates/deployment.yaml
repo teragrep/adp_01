@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archive-datagenerator-static
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: archive-datagenerator-static
+spec:
+  selector:
+    matchLabels:
+      app: archive-datagenerator-static
+  template:
+    metadata:
+      labels:
+        app: archive-datagenerator-static
+    spec:
+      volumes:
+        - name: archive-datagenerator-static-data
+          emptyDir:
+        - name: archive-datagenerator-static-obj-01-configmap
+          configMap:
+            name: archive-datagenerator-static-obj-01-configmap
+        - name: archive-datagenerator-static-rest-02-data-tool-configmap
+          configMap:
+            name: archive-datagenerator-static-rest-02-data-tool-configmap
+        - name: archive-datagenerator-static-init-configmap
+          configMap:
+            name: archive-datagenerator-static-init-configmap
+        - name: archive-datagenerator-static-init-extras-configmap
+          configMap:
+            name: archive-datagenerator-static-init-extras-configmap
+        - name: archive-datagenerator-static-entrypoint
+          configMap:
+            name: archive-datagenerator-static-entrypoint
+      hostname: archive-datagenerator-static
+      subdomain: tg
+      containers:
+        - name: archive-datagenerator-static
+          image: {{index .Values.containers "archive-datagenerator-static"}}
+          volumeMounts:
+            - mountPath: /data
+              name: archive-datagenerator-static-data
+            - mountPath: /config/obj-01
+              name: archive-datagenerator-static-obj-01-configmap
+            - mountPath: /config/rest-02-data-tool
+              name: archive-datagenerator-static-rest-02-data-tool-configmap
+            - mountPath: /config/init
+              name: archive-datagenerator-static-init-configmap
+            - mountPath: /init-extras
+              name: archive-datagenerator-static-init-extras-configmap
+            - mountPath: /entrypoint.sh
+              name: archive-datagenerator-static-entrypoint
+              subPath: entrypoint.sh
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "[ -f /data/bootstrapped ]"
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 60
+          securityContext:
+            privileged: {{.Values.security.privileged}}

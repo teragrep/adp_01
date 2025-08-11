@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archive-journal
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: archive-journal
+spec:
+  selector:
+    matchLabels:
+      app: archive-journal
+  template:
+    metadata:
+      labels:
+        app: archive-journal
+    spec:
+      volumes:
+        - name: archive-rest-01-configmap
+          configMap:
+            name: archive-rest-01-configmap
+        - name: archive-entrypoint
+          configMap:
+            name: archive-entrypoint
+        - name: archive-database-shared
+          configMap:
+            name: archive-database-shared
+      hostname: archive-journal
+      subdomain: tg
+      containers:
+        - name: archive-journal
+          image: {{.Values.containers.archive.journal}}
+          volumeMounts:
+            - mountPath: /config/
+              name: archive-rest-01-configmap
+            - mountPath: /entrypoint-common.sh
+              name: archive-entrypoint
+              subPath: entrypoint-common.sh
+            - mountPath: /entrypoint.sh
+              name: archive-entrypoint
+              subPath: entrypoint-journal.sh
+            - mountPath: /etc/my.cnf.d/enforce_tls.cnf
+              name: archive-database-shared
+              subPath: enforce_tls.cnf
+          tty: true
+          env:
+          - name: IPA_DOMAIN
+            value: {{.Values.ipa.domain}}
+          - name: IPA_PASSWORD
+            value: {{.Values.ipa.password}}
+          readinessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "systemctl status rest-01 && journalctl -u rest-01 | grep \"Started Main\""
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          livenessProbe:
+            exec:
+              command:
+              - "/usr/bin/bash"
+              - "-c"
+              - "ping -c1 -w1 ipa.{{.Values.ipa.domain}} && systemctl status rest-01"
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 12
+          securityContext:
+            privileged: {{.Values.security.privileged}}

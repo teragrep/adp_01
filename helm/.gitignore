@@ -1,0 +1,3 @@
+# All custom yaml values files are ignored for development purposes.
+/config-*.yaml
+/**/values-*.yaml
