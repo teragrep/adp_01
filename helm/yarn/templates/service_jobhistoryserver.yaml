@@ -1,0 +1,15 @@
+metadata:
+  name: yarn-jobhistoryserver-nodeport
+  namespace: {{.Release.Namespace}}
+apiVersion: v1
+kind: Service
+spec:
+  sessionAffinity: None
+  selector:
+    app: yarn-controlnode01
+  ports:
+  - protocol: TCP
+    port: 19888
+    name: yarn-jobhistoryserver-nodeport
+    targetPort: 19888
+  type: NodePort
