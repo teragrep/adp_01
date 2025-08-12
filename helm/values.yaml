@@ -104,11 +104,11 @@ archive:
         # All hosts have ipa.domain suffix
         hosts:
           example: ignored-value-for-now
-          dedup: ignored-value-for-now
+          index-with-duplicates: ignored-value-for-now
         # key:value gets mapped as tag -> index lookup json.
         indexes:
           example: example
-          dedup: dedup
+          index-with-duplicates: index-with-duplicates
   # rest-01-database
   journal:
     database:

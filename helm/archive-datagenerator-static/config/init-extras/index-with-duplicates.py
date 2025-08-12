@@ -3,8 +3,8 @@ import pytz
 import datetime
 timezone = pytz.timezone('Europe/Helsinki')
 basepath = "/srv/data/spool"
-host="dedup.{{.Values.ipa.domain}}"
-tag="dedup"
+host="index-with-duplicates.{{.Values.ipa.domain}}"
+tag="index-with-duplicates"
 # Starting timestamp
 starting_epoch = 1696464000 # Your time zone: Thursday, October 5, 2023 3:00:00 GMT+03:00 DST
 for hour in range(1,4):
