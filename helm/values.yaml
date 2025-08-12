@@ -69,15 +69,15 @@ security:
   hadoop:
     http:
       # This is user-facing configuration only. The services will communicate securely with each other regardless of this setting.
-      # Use "True" only in trusted/isolated development environments as it will open free access to any HTTP component of Hadoop.
+      # Use "False" only in trusted/isolated development environments as it will open free access to any HTTP component of Hadoop.
       #
-      # False (Default / Secure):
+      # True (Default / Secure):
       #   hadoop.http.authentication.type=kerberos
       #   hadoop.http.authentication.simple.anonymous.allowed=false
-      # True (Insecure):
+      # False (Insecure):
       #   hadoop.http.authentication.type=simple
       #   hadoop.http.authentication.simple.anonymous.allowed=true
-      allow_insecure_access: false
+      require_secure_authentication: true
 
 # Global yarn related configurations
 yarn:
