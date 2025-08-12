@@ -19,4 +19,4 @@ for hour in range(1,4):
         os.makedirs(dirname)
     with open(filename, "a+") as fh:
         for ignored in range(1,4):
-            fh.write(f"<134>1 {timestamp.isoformat('T')} {host} {tag} - - - This duplicated event #{hour}\n")
+            fh.write(f"<134>1 {timestamp.isoformat('T')} {host} {tag} - - - This is duplicated event #{hour}\n")
