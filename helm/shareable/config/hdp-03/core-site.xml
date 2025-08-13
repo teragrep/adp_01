@@ -78,14 +78,16 @@ DEFAULT</value>
     <name>hadoop.security.group.mapping</name>
     <value>org.apache.hadoop.security.ShellBasedUnixGroupsMapping</value>
   </property>
+  <!-- These values are controlled by .Values.security.hadoop.http.require_secure_authentication -->
   <property>
     <name>hadoop.http.authentication.type</name>
-    <value>kerberos</value>
+    <value>{{if .Values.security.hadoop.http.require_secure_authentication}}kerberos{{else}}simple{{end}}</value>
   </property>
   <property>
     <name>hadoop.http.authentication.simple.anonymous.allowed</name>
-    <value>false</value>
+    <value>{{if .Values.security.hadoop.http.require_secure_authentication}}false{{else}}true{{end}}</value>
   </property>
+  <!-- /.Values.security.hadoop.http.require_secure_authentication-->
   <property>
     <name>hadoop.http.authentication.kerberos.principal</name>
     <value>HTTP/_HOST@{{.Values.ipa.domain | upper}}</value>

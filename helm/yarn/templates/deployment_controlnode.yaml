@@ -42,6 +42,11 @@ spec:
               name: yarn-entrypoint
               subPath: entrypoint-common.sh
           tty: true
+          ports:
+          # jobhistoryserver
+          - containerPort: 19888
+          # resourcemanager
+          - containerPort: 8088
           env:
           - name: IPA_DOMAIN
             value: {{.Values.ipa.domain}}

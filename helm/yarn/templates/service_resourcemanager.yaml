@@ -1,0 +1,15 @@
+metadata:
+  name: yarn-resourcemanager-nodeport
+  namespace: {{.Release.Namespace}}
+apiVersion: v1
+kind: Service
+spec:
+  sessionAffinity: None
+  selector:
+    app: yarn-controlnode01
+  ports:
+  - protocol: TCP
+    port: 8088
+    name: yarn-resourcemanager-nodeport
+    targetPort: 8088
+  type: NodePort
