@@ -44,6 +44,9 @@ spec:
               name: yarn-entrypoint
               subPath: entrypoint-common.sh
           tty: true
+          ports:
+          # nodemanager
+          - containerPort: 8042
           env:
           - name: IPA_DOMAIN
             value: {{$.Values.ipa.domain}}
