@@ -1,0 +1,19 @@
+# The end of range is not inclusive so one needs to be added.
+{{- range untilStep 1 (max 1 (.Values.yarn.nodes) | add1 | int) 1 }}
+---
+metadata:
+  name: yarn-nodemanager{{printf "%02d" .}}-nodeport
+  namespace: {{$.Release.Namespace}}
+apiVersion: v1
+kind: Service
+spec:
+  sessionAffinity: None
+  selector:
+    app: yarn-workernode{{printf "%02d" .}}
+  ports:
+  - protocol: TCP
+    port: 8042
+    name: yarn-nodemanager{{printf "%02d" .}}-nodeport
+    targetPort: 8042
+  type: NodePort
+{{- end}}
