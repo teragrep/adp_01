@@ -1,4 +1,4 @@
-FROM rockylinux:9
+FROM docker.io/rockylinux/rockylinux:9
 RUN dnf install -y iputils freeipa-client && dnf clean all
 # Remove non-necessary systemd parts
 RUN find /etc/systemd/system /usr/lib/systemd/system/{basic,multi-user,sysinit}.target.wants -type l -not -lname /dev/null -delete && systemctl mask systemd-logind.service
