@@ -17,8 +17,8 @@ mkdir -p /opt/teragrep/hdp_03/keytabs/;
 mkdir -p /opt/teragrep/hdp_03/jks/;
 chmod 750 /opt/teragrep/hdp_03/jks/;
 for store in client server; do
-    keytool -genkey -storetype PKCS12 -dname "CN=$(hostname -f)" -alias "$(hostname -f)" -keyalg RSA -keystore "/opt/teragrep/hdp_03/jks/${store}-keystore.jks" -keysize 2048 -storepass "{{.Values.hdfs.jkspassword}}";
-    keytool -noprompt -keystore "/opt/teragrep/hdp_03/jks/${store}-truststore.jks" -alias CARoot -import -trustcacerts -file "/etc/ssl/certs/ca-bundle.crt" -keypass "{{.Values.hdfs.jkspassword}}" -storepass "{{.Values.hdfs.jkspassword}}";
+    keytool -genkey -storetype PKCS12 -dname "CN=$(hostname -f)" -alias "$(hostname -f)" -keyalg RSA -keystore "/opt/teragrep/hdp_03/jks/${store}-keystore.jks" -keysize 2048 -storepass "{{.Values.jks.password}}";
+    keytool -noprompt -keystore "/opt/teragrep/hdp_03/jks/${store}-truststore.jks" -alias CARoot -import -trustcacerts -file "/etc/ssl/certs/ca-bundle.crt" -keypass "{{.Values.jks.password}}" -storepass "{{.Values.jks.password}}";
 done;
 chown -R hdfs:hadoop /opt/teragrep/hdp_03/jks/;
 chmod 640 /opt/teragrep/hdp_03/jks/*.jks;

@@ -8,7 +8,7 @@
   </property>
   <property>
     <name>ssl.server.truststore.password</name>
-    <value>{{.Values.hdfs.jkspassword}}</value>
+    <value>{{.Values.jks.password}}</value>
     <description>Optional. Default value is "".</description>
   </property>
   <property>
@@ -29,12 +29,12 @@
   </property>
   <property>
     <name>ssl.server.keystore.password</name>
-    <value>{{.Values.hdfs.jkspassword}}</value>
+    <value>{{.Values.jks.password}}</value>
     <description>Must be specified.</description>
   </property>
   <property>
     <name>ssl.server.keystore.keypassword</name>
-    <value>{{.Values.hdfs.jkspassword}}</value>
+    <value>{{.Values.jks.password}}</value>
     <description>Must be specified.</description>
   </property>
   <property>
