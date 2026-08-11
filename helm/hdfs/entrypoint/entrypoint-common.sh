@@ -13,15 +13,31 @@ chown hdfs:hadoop /opt/teragrep/dfs;
 kinit -kt /etc/krb5.keytab;
 mkdir -p /opt/teragrep/hdp_03/keytabs/;
 
-# Generate jks
+# Create JKS directories
 mkdir -p /opt/teragrep/hdp_03/jks/;
-chmod 750 /opt/teragrep/hdp_03/jks/;
-for store in client server; do
-    keytool -genkey -storetype PKCS12 -dname "CN=$(hostname -f)" -alias "$(hostname -f)" -keyalg RSA -keystore "/opt/teragrep/hdp_03/jks/${store}-keystore.jks" -keysize 2048 -storepass "{{.Values.jks.password}}";
-    keytool -noprompt -keystore "/opt/teragrep/hdp_03/jks/${store}-truststore.jks" -alias CARoot -import -trustcacerts -file "/etc/ssl/certs/ca-bundle.crt" -keypass "{{.Values.jks.password}}" -storepass "{{.Values.jks.password}}";
-done;
+chmod 755 /opt/teragrep/hdp_03/jks/;
+
+# Import CA cert
+keytool -import -noprompt -alias ca -file /etc/ssl/certs/ca-bundle.crt -keystore "/opt/teragrep/hdp_03/jks/truststore.jks" -storepass "{{.Values.jks.password}}";
+
+# Create keypair
+keytool -genkeypair -storetype PKCS12 -alias "$(hostname -f)" -keyalg RSA -keysize 2048 -dname "CN=$(hostname -f)" -keystore "/opt/teragrep/hdp_03/jks/keystore.jks" -storepass "{{.Values.jks.password}}" -keypass "{{.Values.jks.password}}";
+
+# Extract CSR
+keytool -certreq -alias "$(hostname -f)" -keystore "/opt/teragrep/hdp_03/jks/keystore.jks" -storepass "{{.Values.jks.password}}" -file "/opt/teragrep/hdp_03/jks/keystore.csr";
+
+# Submit CSR to be signed
+ipa cert-request "/opt/teragrep/hdp_03/jks/keystore.csr" --principal="HTTP/$(hostname -f)" --certificate-out="/opt/teragrep/hdp_03/jks/keystore.crt";
+
+# Import CA cert to the keystore
+keytool -import -noprompt -alias ca -file /etc/ssl/certs/ca-bundle.crt -keystore "/opt/teragrep/hdp_03/jks/keystore.jks" -storepass "{{.Values.jks.password}}";
+
+# Import signed certificate to the keystore
+keytool -import -noprompt -alias "$(hostname -f)" -file "/opt/teragrep/hdp_03/jks/keystore.crt" -keystore "/opt/teragrep/hdp_03/jks/keystore.jks" -storepass "{{.Values.jks.password}}";
+
+# Set permissions
 chown -R hdfs:hadoop /opt/teragrep/hdp_03/jks/;
-chmod 640 /opt/teragrep/hdp_03/jks/*.jks;
+chmod 644 /opt/teragrep/hdp_03/jks/*.jks;
 
 get_keytab() {
     echo "Getting keytab ${1}";

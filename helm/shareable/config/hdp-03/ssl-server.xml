@@ -3,7 +3,7 @@
 <configuration>
   <property>
     <name>ssl.server.truststore.location</name>
-    <value>/opt/teragrep/hdp_03/jks/server-truststore.jks</value>
+    <value>/opt/teragrep/hdp_03/jks/truststore.jks</value>
     <description>Truststore to be used by NN and DN. Must be specified.</description>
   </property>
   <property>
@@ -24,7 +24,7 @@
   </property>
   <property>
     <name>ssl.server.keystore.location</name>
-    <value>/opt/teragrep/hdp_03/jks/server-keystore.jks</value>
+    <value>/opt/teragrep/hdp_03/jks/keystore.jks</value>
     <description>Keystore to be used by NN and DN. Must be specified.</description>
   </property>
   <property>
