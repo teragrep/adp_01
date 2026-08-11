@@ -14,7 +14,7 @@
   </property>
   <property>
     <name>yarn.log.server.url</name>
-    <value>http://{{.Values.ipa.domain | lower}}:19888/jobhistory/logs</value>
+    <value>https://{{.Values.ipa.domain | lower}}:19888/jobhistory/logs</value>
   </property>
   <property>
     <name>yarn.nodemanager.aux-services</name>

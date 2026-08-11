@@ -100,7 +100,10 @@ hdfs:
   nodes: 3
   superusergroup: hdfs
   administrators: hdfs
-  jkspassword: jksp4ssw0rd
+
+# JKS configurations
+jks:
+  password: jksp4ssw0rd
 
 # Archive related configurations
 archive:
