@@ -1,0 +1,154 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\nThe profiler logs will be saved in `/tmp/profiler` on the workernode it is running on.",
+      "user": "dummy-user",
+      "dateUpdated": "2001-01-01 01:01:01.000",
+      "progress": 0,
+      "config": {
+        "lineNumbers": true,
+        "tableHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9,
+        "editorHide": false,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1755239534490_253647129",
+      "id": "paragraph_1755239534490_253647129",
+      "dateCreated": "2001-01-01 01:01:01.000",
+      "dateStarted": "2001-01-01 01:01:01.000",
+      "dateFinished": "2001-01-01 01:01:01.000",
+      "status": "READY",
+      "focus": true,
+      "$$hashKey": "object:307"
+    },
+    {
+      "text": "%spark.conf\nspark.jars=/opt/teragrep/spk_03/lib/*.jar,/opt/Fail-Safe/jvm-profiler/lib/jvm-profiler.jar\nspark.driver.extraJavaOptions='-Dlog4j.configuration=file:log4j_yarn_cluster.properties' '-javaagent:jvm-profiler.jar=reporter=com.uber.profiling.reporters.FileOutputReporter,outputDir=/tmp/profiler,durationProfiling=com.teragrep.pth10.steps.teragrep.*,durationProfiling=com.teragrep.functions.dpf_03.TokenAggregator.*,sampleInterval=500,tag=profiler'\nspark.executor.extraJavaOptions='-Dlog4j.configuration=file:log4j_yarn_cluster.properties' '-javaagent:jvm-profiler.jar=reporter=com.uber.profiling.reporters.FileOutputReporter,outputDir=/tmp/profiler,durationProfiling=com.teragrep.pth10.steps.teragrep.*,durationProfiling=com.teragrep.functions.dpf_03.TokenAggregator.*,sampleInterval=500,tag=profiler'",
+      "user": "dummy-user",
+      "dateUpdated": "2001-01-01 01:01:01.000",
+      "progress": 0,
+      "config": {
+        "lineNumbers": true,
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1755238830704_1981550825",
+      "id": "paragraph_1755238830704_1981550825",
+      "dateCreated": "2001-01-01 01:01:01.000",
+      "dateStarted": "2001-01-01 01:01:01.000",
+      "dateFinished": "2001-01-01 01:01:01.000",
+      "status": "READY",
+      "$$hashKey": "object:308"
+    },
+    {
+      "text": "%dpl\n| makeresults count=10",
+      "user": "dummy-user",
+      "dateUpdated": "2001-01-01 01:01:01.000",
+      "progress": 0,
+      "config": {
+        "lineNumbers": true,
+        "editorSetting": {
+          "language": "dpl",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/dpl",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1755238928075_1483724358",
+      "id": "paragraph_1755238928075_1483724358",
+      "dateCreated": "2001-01-01 01:01:01.000",
+      "dateStarted": "2001-01-01 01:01:01.000",
+      "dateFinished": "2001-01-01 01:01:01.000",
+      "status": "READY",
+      "$$hashKey": "object:309"
+    },
+    {
+      "text": "%pyspark\nimport glob\nimport json\nfiles = glob.glob(\"/tmp/profiler/*.json\")\nfor file in files:\n    print(f\"Example content for file '{file}'\")\n    with open(file, \"r\") as fh:\n        print(json.dumps(json.loads(fh.readline()),indent=2))\n    print(\"---\")",
+      "user": "dummy-user",
+      "dateUpdated": "2001-01-01 01:01:01.000",
+      "progress": 0,
+      "config": {
+        "lineNumbers": true,
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1755241948889_1692855420",
+      "id": "paragraph_1755241948889_1692855420",
+      "dateCreated": "2001-01-01 01:01:01.000",
+      "dateStarted": "2001-01-01 01:01:01.000",
+      "dateFinished": "2001-01-01 01:01:01.000",
+      "status": "READY",
+      "$$hashKey": "object:310"
+    }
+  ],
+  "name": "jvm-profiler",
+  "id": "2M49P6UZN",
+  "defaultInterpreterGroup": "spark",
+  "version": "2.0.1",
+  "noteParams": {},
+  "noteForms": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": true,
+    "looknfeel": "default",
+    "personalizedMode": "false",
+    "cronInput": ""
+  },
+  "info": {},
+  "path": "/jvm-profiler"
+}
